@@ -29,6 +29,10 @@ jupyter lab
 | `notebooks/01_train_multitask_cnn.ipynb` | Loads the spectral library + ROIs, resamples to the sensor's bands, trains the CNN, and writes the model bundle to `models/example_model_v1/`. |
 | `notebooks/02_batch_predict_image.ipynb` | Loads that bundle and classifies a reflectance image, writing an ENVI classification map. |
 
+Each code cell has a short markdown cell above it explaining what it does, so
+the notebooks double as a written walkthrough. If you're recording or following
+the tutorial videos, `docs/recording_runbook.md` is the high-level guide.
+
 ## Layout
 
 ```
