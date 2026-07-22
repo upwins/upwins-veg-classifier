@@ -1,0 +1,47 @@
+# ==========================================================================
+# Configuration for the UPWINS vegetation classifier.
+# All notebook paths are read from here -- edit this file, not the notebooks.
+#
+# Paths are relative to the repo root (where you launch Jupyter). For the
+# tutorial/video, point `image`, `roi_dir`, and `spectral_library` at your
+# real data directory. The devcontainer bind-mounts an external data/ dir,
+# so you can keep large data outside the repo.
+# ==========================================================================
+
+paths:
+  # Full spectral library (a pickled DataFrame of labeled ASD spectra).
+  spectral_library: data/library/library_with_Genus_species.pkl
+
+  # Reference reflectance image used to read the sensor's band centers
+  # (ENVI cube: give the file with and without the .hdr extension).
+  image:     data/sample/raw_0_ref
+  image_hdr: data/sample/raw_0_ref.hdr
+
+  # Directory tree of labeled training ROIs (.pkl files).
+  roi_dir: data/rois_labeled
+
+  # A single ROI used only as an alternative source of target bands
+  # (Option 2 in the training notebook).
+  reference_roi: data/rois_labeled/example_training_roi.pkl
+
+  # Where the trained model bundle is written / read. Keep model.keras,
+  # scaler.pkl, label_maps.json and wavelengths.json together here.
+  model_dir: models/example_model_v1
+
+training:
+  batch_size: 32
+  epochs: 600          # EarlyStopping (patience below) picks the best epoch
+  learning_rate: 0.0001
+  patience: 30
+
+prediction:
+  # Image to classify -- typically collected the same day as `image` above,
+  # so it already shares the same band centers.
+  input_hdr:  data/sample/raw_0_ref.hdr
+  output_dir: data/output
+  rows_per_chunk: 512  # lower this if you run out of RAM on large images
+
+data_source:
+  # Optional: refresh the spectral library from the internal MongoDB.
+  # Leave false for the tutorial; it needs credentials in .env.
+  reload_from_mongodb: false

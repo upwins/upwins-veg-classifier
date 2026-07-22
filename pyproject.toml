@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "upwins-veg-classifier"
+version = "1.0.0"
+description = "Hyperspectral vegetation classification: train a multi-task 1D-CNN on a spectral library plus labeled ROIs, and batch-classify imagery."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

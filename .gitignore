@@ -1,0 +1,15 @@
+# Data lives outside the repo (bind-mounted in the devcontainer). Keep only the
+# small committed sample under data/sample/ so a fresh clone runs end-to-end.
+data/*
+!data/sample/
+!data/README.md
+
+# Notebook / Python cruft
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.env
+
+# Model bundle: commit the small example bundle, ignore ad-hoc experiments.
+models/*
+!models/example_model_v1/

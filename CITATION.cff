@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+title: UPWINS Vegetation Classifier
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - name: UPWINS
+license: MIT
+abstract: >-
+  Hyperspectral vegetation classification: a multi-task 1D-CNN trained on a
+  spectral library plus labeled ROIs, with batch classification of imagery.
+identifiers:
+  - type: other
+    value: "NSF Grant No. 2319470"
+    description: Funding source
