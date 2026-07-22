@@ -8,7 +8,7 @@ per pixel: *plant, age, part, health, lifecycle*.
 
 This is the training-and-prediction half of the UPWINS pipeline. Producing the
 reflectance imagery and ROIs it consumes is covered in the companion
-`species_mapping` project.
+`upwins-hsi-preprocessing` project.
 
 ## Quickstart
 

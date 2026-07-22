@@ -7,8 +7,8 @@ just gives you the running order, the beats to emphasize, and the gotchas.
 
 > **Scope.** This repo covers the **second half** of the pipeline — training a
 > model and classifying imagery. The first half (raw image → reflectance → ROI
-> creation) lives in the `species_mapping` repo and is a separate video; a
-> matching runbook for it comes later.
+> creation) lives in the `upwins-hsi-preprocessing` repo and is a separate video;
+> its runbook is `docs/recording_runbook.md` there.
 
 ---
 
