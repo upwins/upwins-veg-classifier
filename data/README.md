@@ -16,6 +16,15 @@ data/
 └── output/                     Classification maps written by prediction
 ```
 
+## Where training ROIs come from
+
+The labeled ROI `.pkl` files are produced by the interactive hsiViewer in the
+companion **`upwins-hsi-preprocessing`** repo (raw → reflectance → ROIs). They
+are pickled `hsiViewer.hsi_viewer_ROI.ROIs_class` objects; this repo bundles a
+small dependency-free stand-in for that class (`hsiViewer/`) so the training
+notebook can load them without the PyQt viewer. Name ROIs with the same
+convention as the spectral library (e.g. `Ammo_bre_...`) so their labels line up.
+
 ## Getting the full dataset
 
 The full imagery, ROI set, and spectral library are distributed separately
