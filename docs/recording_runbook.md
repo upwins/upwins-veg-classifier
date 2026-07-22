@@ -63,9 +63,17 @@ Run top to bottom.
 | **Classify the image** | Highlight the **band-match assertion** — it refuses to run on an image whose bands don't match the model, turning a silent wrong answer into a clear error. Then it classifies chunk-by-chunk. |
 
 **Expected result on screen:** ENVI classification maps appear in
-`data/output/` (one per task). If you have a viewer handy, open the `plant`
-classification map over the image for the closing shot — collected the same day
-as the training image, so its bands already match.
+`data/output/` (one per task).
+
+---
+
+## 2b. Optional — Display  →  `notebooks/03_display_classification.ipynb`
+
+For the closing shot, run this to render a classification map with a labeled,
+color-coded legend. Set `TASK` (e.g. `plant`) and run — it rebuilds the output
+path from the config. This is the satisfying "here's the vegetation map" beat;
+the prediction image was collected the same day as the training image, so its
+bands already match.
 
 ---
 
