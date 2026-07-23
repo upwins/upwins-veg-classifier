@@ -28,12 +28,6 @@ paths:
   # scaler.pkl, label_maps.json and wavelengths.json together here.
   model_dir: models/example_model_v1
 
-training:
-  batch_size: 32
-  epochs: 600          # EarlyStopping (patience below) picks the best epoch
-  learning_rate: 0.0001
-  patience: 30
-
 prediction:
   # Image to classify -- typically collected the same day as `image` above,
   # so it already shares the same band centers.
