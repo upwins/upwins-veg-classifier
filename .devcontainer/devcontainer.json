@@ -18,18 +18,15 @@
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
-		  "extensions": ["ms-toolsai.jupyter", "ms-python.python", "quarto.quarto"]
+		  "extensions": ["ms-toolsai.jupyter", "ms-python.python"]
 		}
 	  },
 
 	"runArgs": ["--gpus","all"],
-	//"--shm-size=1g", "--ulimit", "memlock=-1", "--ulimit", "stack=67108864"
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	//"remoteUser": "root",
 
-	"mounts": ["source=${localEnv:HOME}/projects/upwins/data,target=/workspaces/NN_Hyperspectral_Vegetation/data,type=bind,consistency=cached"]
-	//"source=/mnt/d,target=/workspaces/NN_Hyperspectral_Vegetation/data/D-drive,type=bind,consistency=cached"]
-
-	//"mounts": ["source=/home/gta/data,target=/workspaces/mm_general_dev/input_dir,type=bind,consistency=cached"]
+	"mounts": ["source=${localEnv:HOME}/projects/upwins/data,target=/workspaces/upwins-veg-classifier/data,type=bind,consistency=cached"]
+	//"source=/mnt/d,target=/workspaces/upwins-veg-classifier/data/D-drive,type=bind,consistency=cached"]
 }
