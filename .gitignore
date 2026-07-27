@@ -1,8 +1,7 @@
-# Data lives outside the repo (bind-mounted in the devcontainer). Keep only the
-# small committed sample under data/sample/ so a fresh clone runs end-to-end.
-data/*
-!data/sample/
-!data/README.md
+# Data lives outside the repo (bind-mounted over data/ in the devcontainer).
+# Nothing under data/ is committed, so this needs no exceptions. Anything the
+# repo does ship for a run lives outside data/ -- see examples/ and docs/data.md.
+data/
 
 # Metric CSVs from the training notebook. config.yaml sends these to
 # paths.metrics_dir (under data/, already ignored above); this second net

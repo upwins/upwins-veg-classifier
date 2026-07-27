@@ -1,15 +1,14 @@
 # Data
 
-Large data is **not** committed to this repo. Only a small sample lives under
-`data/sample/` so a fresh clone can run both notebooks end to end.
+No data is committed to this repo. Everything under `data/` is external —
+either downloaded, bind-mounted, or written by a run — and the whole directory
+is gitignored. A fresh clone has no `data/` at all; it is created by the
+devcontainer mount, or by the notebooks when they write their outputs.
 
 ## Expected layout
 
 ```
 data/
-├── sample/                     Small committed example (cropped image + a few ROIs)
-│   ├── raw_0_ref  raw_0_ref.hdr    A small ENVI reflectance cube
-│   └── ...
 ├── library/
 │   └── library_with_Genus_species.pkl   Full spectral library (pickled DataFrame)
 ├── rois_labeled/               Labeled training ROIs (.pkl), any subfolder depth
@@ -17,8 +16,8 @@ data/
 └── output/                     Classification maps written by prediction
 ```
 
-`metrics/` and `output/` are created on demand and are gitignored — they hold
-run artifacts, not inputs. Their locations come from `paths.metrics_dir` and
+`metrics/` and `output/` are created on demand — they hold run artifacts, not
+inputs. Their locations come from `paths.metrics_dir` and
 `prediction.output_dir` in `config.yaml`.
 
 ## Where training ROIs come from
@@ -41,9 +40,22 @@ The full imagery, ROI set, and spectral library are distributed separately
 After downloading, place the files to match the layout above, or edit the paths
 in `config.yaml` to point at wherever you keep them.
 
-The devcontainer bind-mounts an external data directory
-(`~/projects/upwins/data`) to `data/` inside the container, so you can keep the
-full dataset outside the repo entirely. That host path is hardcoded in
-`.devcontainer/devcontainer.json` and must be edited if yours differs; see the
-README's Data section for the details and one gotcha (the mount hides the
-committed `data/sample/`).
+## The devcontainer mount
+
+`.devcontainer/devcontainer.json` bind-mounts an external data directory onto
+`data/` inside the container, so the full dataset can live outside the repo
+entirely:
+
+```
+source=${localEnv:HOME}/projects/upwins/data  ->  /workspaces/upwins-veg-classifier/data
+```
+
+**The host path is hardcoded.** If your data is not at `~/projects/upwins/data`,
+edit that `mounts` line before opening the container — Docker silently creates
+an empty directory for a source path that does not exist, and the notebooks then
+fail with confusing missing-file errors rather than saying the mount was wrong.
+
+Because `data/` holds no committed content, the mount hides nothing: inside the
+container, `data/` is simply your external directory. Anything the repo ships
+that a run needs — such as a small runnable example — lives outside `data/`
+(see `examples/`) so the mount cannot cover it.

@@ -19,7 +19,7 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 pip install -e .                                      # makes `upwins_veg` importable
 
-# 2. Point config.yaml at your data (a small sample is included under data/sample/)
+# 2. Point config.yaml at your data (see docs/data.md for the expected layout)
 
 # 3. Launch Jupyter and run the two notebooks in order
 jupyter lab
@@ -43,8 +43,9 @@ notebooks/               The two deliverable notebooks (run in order).
 src/upwins_veg/          Importable support code (installed via `pip install -e .`).
 src/hsiViewer/           Stand-in ROIs_class so ROI pickles load without the PyQt viewer.
 models/example_model_v1/ The trained model bundle (model + scaler + label maps + wavelengths).
-data/sample/             Small committed sample so a fresh clone runs.
-docs/                    Model card + executed HTML exports of the notebooks.
+examples/                Placeholder for a small runnable example (not yet populated).
+data/                    Not committed -- external data and run outputs; see docs/data.md.
+docs/                    Model card, data guide + executed HTML exports of the notebooks.
 ```
 
 ## The model bundle
@@ -59,8 +60,9 @@ together — a mismatch silently produces wrong class names:
 
 ## Data
 
-Only a small sample ships in the repo. The full imagery, ROIs, and spectral
-library are large; see `data/README.md` for how to obtain and place them.
+No data ships in the repo. `data/` holds the imagery, ROIs, spectral library and
+run outputs, and is gitignored in full — a fresh clone does not have it. See
+**`docs/data.md`** for the expected layout and how to obtain the dataset.
 
 ### If you use the devcontainer
 
@@ -76,10 +78,8 @@ edit that `mounts` line before opening the container — Docker silently creates
 an empty directory for a source path that does not exist, and the notebooks then
 fail with confusing missing-file errors rather than saying the mount was wrong.
 
-Note that the mount **replaces** the repo's `data/` directory, so the committed
-`data/sample/` is not visible inside the container unless your external data
-directory also contains a `sample/` folder. Either copy the sample there, or
-point `config.yaml` at the real data.
+Because nothing is committed under `data/`, the mount hides nothing: inside the
+container, `data/` is simply your external directory.
 
 ## Acknowledgment
 
