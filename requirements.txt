@@ -1,5 +1,9 @@
 # Pinned so a fresh clone reproduces the tutorial environment.
 #
+# This file is the single source of truth for runtime dependencies:
+# pyproject.toml deliberately declares none, so install this first and then
+# `pip install -e .` to put `upwins_veg` on the import path.
+#
 # IMPORTANT: a pickled StandardScaler and a saved .keras model are sensitive
 # to the versions they were created with. These pins match the NVIDIA
 # `nvcr.io/nvidia/tensorflow:24.12-tf2-py3` container the project was built in.

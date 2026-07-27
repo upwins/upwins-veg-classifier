@@ -8,7 +8,19 @@ version = "1.0.0"
 description = "Hyperspectral vegetation classification: train a multi-task 1D-CNN on a spectral library plus labeled ROIs, and batch-classify imagery."
 readme = "README.md"
 requires-python = ">=3.10"
+# Kept as a table deliberately. The PEP 639 string form (license = "MIT") needs
+# setuptools >= 77, which would mean bumping [build-system] requires above and
+# relying on build isolation to fetch it — that breaks
+# `pip install --no-build-isolation` in pinned/offline environments. The table
+# form only costs a deprecation warning on new setuptools. Do not "modernize".
 license = {text = "MIT"}
+
+# No [project.dependencies] on purpose. Runtime dependencies are pinned in
+# requirements.txt, which is the single source of truth for this project — the
+# pins must match the environment the .keras model and the pickled scaler were
+# created in, and duplicating them here would let the two lists drift.
+# `pip install -e .` exists only to put `upwins_veg` on the import path; install
+# requirements.txt first (the devcontainer and the README both do).
 
 [tool.setuptools.packages.find]
 where = ["src"]
