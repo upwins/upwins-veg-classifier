@@ -29,9 +29,7 @@ paths:
   model_dir: models/example_model_v1
 
   # Where the training notebook writes its per-task metric CSVs (one per task
-  # head, plus an overall one). This is under data/ so it is gitignored: the
-  # CSVs are run artifacts, not deliverables. Writing them beside the notebook
-  # instead left them loose in notebooks/, where git offers them up for commit.
+  # head, plus an overall one).
   metrics_dir: data/metrics
 
 prediction:
