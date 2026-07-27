@@ -14,7 +14,8 @@ reflectance imagery and ROIs it consumes is covered in the companion
 
 ```bash
 # 1. Create the environment (matches the pinned versions the model was built with)
-python -m venv .venv && source .venv/bin/activate    # or use the devcontainer
+#    The devcontainer does both of these steps for you; skip to step 2 if you use it.
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 pip install -e .                                      # makes `upwins_veg` importable
 

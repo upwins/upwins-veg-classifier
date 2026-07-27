@@ -12,8 +12,9 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "python --version",
+	// Runs after the workspace is mounted, so the editable install points at the
+	// live source tree rather than a build-time copy. Makes `upwins_veg` importable.
+	"postCreateCommand": "python -m pip install --no-cache-dir -e .",
 
 	// Configure tool-specific properties.
 	"customizations": {
