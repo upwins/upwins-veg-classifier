@@ -41,6 +41,7 @@ the tutorial videos, `docs/recording_runbook.md` is the high-level guide.
 config.yaml              All paths and hyperparameters live here.
 notebooks/               The two deliverable notebooks (run in order).
 src/upwins_veg/          Importable support code (installed via `pip install -e .`).
+src/hsiViewer/           Stand-in ROIs_class so ROI pickles load without the PyQt viewer.
 models/example_model_v1/ The trained model bundle (model + scaler + label maps + wavelengths).
 data/sample/             Small committed sample so a fresh clone runs.
 docs/                    Model card + executed HTML exports of the notebooks.

@@ -10,6 +10,11 @@ __pycache__/
 .ipynb_checkpoints/
 .env
 
+# Build metadata from `pip install -e .`
+*.egg-info/
+build/
+dist/
+
 # Model bundle: commit the small example bundle, ignore ad-hoc experiments.
 models/*
 !models/example_model_v1/
