@@ -65,7 +65,7 @@ in `label_maps.json`.
 | Batch size | 32 |
 | Epochs | up to 600, `EarlyStopping(monitor='val_loss', patience=30, restore_best_weights=True)` |
 | Masking | `'N'` (unlabeled) samples get sample weight 0 for `plant`, `age`, `part`, `health`, so they contribute no loss and are excluded from the reported metrics. **`lifecycle` is the exception**: `'N'` ("Neither") is a real trained class there. |
-| Seeds | `tf.keras.utils.set_random_seed(42)`; `random_state=42` on both splits |
+| Seeds | `random.seed(42)`, `np.random.seed(42)`, `tf.random.set_seed(42)`; `random_state=42` on both splits |
 
 - _Fill in: epochs actually run before early stopping._
 
@@ -118,11 +118,15 @@ Notebook 01 evaluates the test set three ways. Record the first two here.
 - Trained by: _fill in_
 - Date: _fill in_
 - Environment: NVIDIA `nvcr.io/nvidia/tensorflow:24.12-tf2-py3` (TF 2.17).
-- Reproducibility: notebook 01 calls `tf.keras.utils.set_random_seed(42)` and
+- Reproducibility: notebook 01 seeds Python, NumPy and TensorFlow directly and
   seeds both `train_test_split` calls with `random_state=42`, so a rerun in the
   **same environment** reproduces this model. Reproducing it exactly also
   requires the pinned versions in `requirements.txt`; a different TensorFlow,
   scikit-learn or numpy will change the result even with the seeds fixed.
+  The three seed calls are deliberately not replaced by
+  `tf.keras.utils.set_random_seed(42)` — under tf_keras 2.17 on Python 3.12 that
+  helper makes the first Conv1D fail to build. See the comment in notebook 01's
+  setup cell.
 
 ## Still to fill in
 
