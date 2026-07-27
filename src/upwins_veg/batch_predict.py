@@ -123,6 +123,12 @@ def classify_and_save_image(fname_hdr, output_dir, model, scaler, label_maps, ta
     Opens, classifies, and saves results for a single ENVI image.
     If target_bands_hdr is provided, source image pixels will be resampled to
     the bands of the target image before classification.
+
+    Raises:
+        Any exception encountered while reading, classifying or writing. Errors
+        are deliberately not swallowed here: a caller must be able to tell a
+        finished image from a failed one. `batch_classify` catches per file so
+        one bad image does not abort a batch.
     """
     print("\n" + "="*80)
     print(f"--- Processing Image: {os.path.basename(fname_hdr)} ---")
@@ -225,9 +231,6 @@ def classify_and_save_image(fname_hdr, output_dir, model, scaler, label_maps, ta
             spectral.envi.save_classification(output_filename, reshaped_map, metadata=im.metadata, class_names=class_names)
             print(f"  -> Successfully saved to: {output_filename}")
 
-    except Exception as e:
-        print(f"\nERROR: Could not process file {fname_hdr}.")
-        print(f"Details: {e}\n")
     finally:
         # --- 5. Explicitly release memory ---
         del im, memmap_im, classification_maps_flat, resampler
@@ -299,12 +302,23 @@ def batch_classify(input_source, output_dir, model, scaler, label_maps, task_nam
 
 
     # --- 3. Loop through each file and process it ---
+    # One bad image must not abort the batch, but it must not be silent either:
+    # every failure is printed, and the run ends with a count so "complete"
+    # can never be mistaken for "everything worked".
+    failed_files = []
     for hdr_path in envi_files:
         try:
             classify_and_save_image(hdr_path, output_dir, model, scaler, label_maps, task_names, rows_per_chunk, target_bands_hdr)
         except Exception as e:
-            print(f"An unexpected error occurred while processing {hdr_path}: {e}")
+            failed_files.append(hdr_path)
+            print(f"\nERROR: Could not process file {hdr_path}.")
+            print(f"Details: {type(e).__name__}: {e}\n")
 
+    n_ok = len(envi_files) - len(failed_files)
     print("\n" + "="*80)
-    print("--- Batch processing complete for all images. ---")
+    print(f"--- Batch processing complete: {n_ok} of {len(envi_files)} images classified. ---")
+    if failed_files:
+        print(f"--- {len(failed_files)} image(s) FAILED: ---")
+        for hdr_path in failed_files:
+            print(f"      {hdr_path}")
     print("="*80)

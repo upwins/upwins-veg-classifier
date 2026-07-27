@@ -77,9 +77,10 @@ class SpectralCollection():
         self.fname = []
 
         select_indices = []
+        skipped_rows = []
 
         for i in range(len(df)):
-            
+
             try:
 
                 row = df.loc[df['ASD UPWINS base_fname'] == self.names[i]]
@@ -108,8 +109,22 @@ class SpectralCollection():
                     else:
                         self.name.append(row['genus'].values[0]+'_'+row['species'].values[0])
                         self.name_full_category.append(row['genus'].values[0]+'_'+row['species'].values[0]+'_'+row['principal_part'].values[0]+'_'+row['health'].values[0]+'_'+row['age'].values[0])
-            except:
+            # A missing metadata column (KeyError) or a spectrum with no matching
+            # row in the csv (IndexError on .values[0]) means this spectrum cannot
+            # be labeled, so it is dropped. Anything else is a real bug and is
+            # allowed to propagate. Dropped rows are counted and reported below so
+            # the library cannot quietly shrink.
+            except (KeyError, IndexError) as e:
+                skipped_rows.append((self.names[i], f'{type(e).__name__}: {e}'))
                 continue
+
+        if skipped_rows:
+            print(f'SpectralCollection: skipped {len(skipped_rows)} of {len(df)} '
+                  'spectra with missing or unreadable metadata.')
+            for skipped_name, reason in skipped_rows[:10]:
+                print(f'    {skipped_name}: {reason}')
+            if len(skipped_rows) > 10:
+                print(f'    ... and {len(skipped_rows) - 10} more.')
 
         #print(len(select_indices))
 
