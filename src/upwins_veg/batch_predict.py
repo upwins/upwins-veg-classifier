@@ -4,6 +4,8 @@ import spectral
 import glob
 import gc
 
+from .preprocessing import is_piloted_source, pixel_wise_normalize
+
 def predict_spectra(new_spectra, model, scaler, label_maps, task_names):
     """
     Predicts classifications for multiple tasks for one or more input spectra.
@@ -178,16 +180,11 @@ def classify_and_save_image(fname_hdr, output_dir, model, scaler, label_maps, ta
             
             spectra_to_predict = valid_spectra_chunk
 
-            # Check for substrings and apply pixel-wise normalization if found
-            substring_list = ["crisfield", "piloted"]
-            if any(sub_str in fname_hdr.lower() for sub_str in substring_list):
-                # Pixel-wise normalization
+            # Piloted-platform data is pixel-wise normalized. Training does the
+            # same via the same helper, so the two cannot diverge.
+            if is_piloted_source(fname_hdr):
                 print("    Running pixel-wise normalization.")
-                min_vals_pixel = np.min(spectra_to_predict, axis=1, keepdims=True)
-                max_vals_pixel = np.max(spectra_to_predict, axis=1, keepdims=True)
-                range_vals_pixel = max_vals_pixel - min_vals_pixel
-                range_vals_pixel[range_vals_pixel == 0] = 1
-                spectra_to_predict = (spectra_to_predict - min_vals_pixel) / range_vals_pixel
+                spectra_to_predict = pixel_wise_normalize(spectra_to_predict)
 
             # --- Resample the chunk if a resampler was created ---
             if resampler:
