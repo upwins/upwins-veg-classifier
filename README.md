@@ -62,6 +62,25 @@ together — a mismatch silently produces wrong class names:
 Only a small sample ships in the repo. The full imagery, ROIs, and spectral
 library are large; see `data/README.md` for how to obtain and place them.
 
+### If you use the devcontainer
+
+`.devcontainer/devcontainer.json` bind-mounts an external data directory over
+`data/` inside the container, so the full dataset can live outside the repo:
+
+```
+source=${localEnv:HOME}/projects/upwins/data  ->  /workspaces/upwins-veg-classifier/data
+```
+
+**The host path is hardcoded.** If your data is not at `~/projects/upwins/data`,
+edit that `mounts` line before opening the container — Docker silently creates
+an empty directory for a source path that does not exist, and the notebooks then
+fail with confusing missing-file errors rather than saying the mount was wrong.
+
+Note that the mount **replaces** the repo's `data/` directory, so the committed
+`data/sample/` is not visible inside the container unless your external data
+directory also contains a `sample/` folder. Either copy the sample there, or
+point `config.yaml` at the real data.
+
 ## Acknowledgment
 
 This material is based upon work supported by the National Science Foundation

@@ -4,6 +4,11 @@ data/*
 !data/sample/
 !data/README.md
 
+# Metric CSVs from the training notebook. config.yaml sends these to
+# paths.metrics_dir (under data/, already ignored above); this second net
+# catches copies written anywhere else, e.g. by an older notebook run.
+classification_report_*.csv
+
 # Notebook / Python cruft
 __pycache__/
 *.pyc

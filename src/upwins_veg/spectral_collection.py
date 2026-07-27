@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import matplotlib
 from collections import defaultdict
 from collections import Counter
-import json
 
 # Set the fontsize and create a function to colot plots be a specific metadata category
 def set_color(x, colormap_name = 'gray'):

@@ -28,6 +28,11 @@ paths:
   # scaler.pkl, label_maps.json and wavelengths.json together here.
   model_dir: models/example_model_v1
 
+  # Where the training notebook writes its per-task metric CSVs. This is under
+  # data/ so it is gitignored: the CSVs are run artifacts, not deliverables, and
+  # writing them beside the notebook got them committed by accident.
+  metrics_dir: data/metrics
+
 prediction:
   # Image to classify -- typically collected the same day as `image` above,
   # so it already shares the same band centers.
