@@ -25,9 +25,9 @@ just gives you the running order, the beats to emphasize, and the gotchas.
 video. Pick one:
 1. **Pre-train off camera**, then on camera run **Option A — load an existing
    model** (cell in Part 1) and skip the train cell. Cleanest for a tutorial.
-2. **Show a short live run** — temporarily set `training.epochs` low (e.g. 15)
-   in `config.yaml` so training finishes in a minute or two on camera, and say
-   the real model was trained for longer.
+2. **Show a short live run** — temporarily set `EPOCHS` low (e.g. 15) in
+   notebook 01's setup cell so training finishes in a minute or two on camera,
+   and say the real model was trained for longer.
 
 ---
 
