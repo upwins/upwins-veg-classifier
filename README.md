@@ -21,7 +21,7 @@ pip install -e .                                      # makes `upwins_veg` impor
 
 # 2. Point config.yaml at your data (see docs/data.md for the expected layout)
 
-# 3. Launch Jupyter and run the two notebooks in order
+# 3. Launch Jupyter and run the three notebooks in order
 jupyter lab
 ```
 
@@ -39,13 +39,13 @@ the tutorial videos, `docs/recording_runbook.md` is the high-level guide.
 
 ```
 config.yaml              All paths and hyperparameters live here.
-notebooks/               The two deliverable notebooks (run in order).
+notebooks/               The three deliverable notebooks (run in order).
 src/upwins_veg/          Importable support code (installed via `pip install -e .`).
 src/hsiViewer/           Stand-in ROIs_class so ROI pickles load without the PyQt viewer.
-models/example_model_v1/ The trained model bundle (model + scaler + label maps + wavelengths).
+models/example_model_v1/ Where notebook 01 writes the model bundle -- not populated in a fresh clone; see its README.
 examples/                Placeholder for a small runnable example (not yet populated).
 data/                    Not committed -- external data and run outputs; see docs/data.md.
-docs/                    Model card, data guide + executed HTML exports of the notebooks.
+docs/                    Model card, data guide, and recording runbook.
 ```
 
 ## The model bundle
