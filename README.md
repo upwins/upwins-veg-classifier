@@ -50,8 +50,8 @@ docs/                    Model card, data guide, and recording runbook.
 
 ## The model bundle
 
-`models/example_model_v1/` holds four coupled files that must always travel
-together — a mismatch silently produces wrong class names:
+`models/example_model_v1/` is written to hold four coupled files that must
+always travel together — a mismatch silently produces wrong class names:
 
 - `model.keras` — the trained network
 - `scaler.pkl` — the `StandardScaler` fit on the training spectra
