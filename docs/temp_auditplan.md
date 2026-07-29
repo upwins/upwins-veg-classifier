@@ -4,25 +4,43 @@ Audit of `upwins-veg-classifier` for client handoff readiness.
 Audited 2026-07-27 on branch `claude/dockerfile-pip-install-editable-fup5kp`.
 **Revised 2026-07-27 after implementing Phases 2–5 and Phase 7** on branch
 `claude/plan-phases-2-5-71wsyr`. Phase 6 was declined by the client.
+**Status reconciled 2026-07-29** against the committed tree — see the overlay
+below.
 
 ---
 
 ## Status at a glance
 
-| Phase | Covers | Status |
-|-------|--------|--------|
-| 1 — Make the promises true | A1, A2, A3 | **On hold** at the client's request. Needs artifacts or approval to rewrite docs. |
-| 2 — Normalization asymmetry | B1 | **Done** — `c8e8e69` |
-| 3 — Fail loudly | B2, B3 | **Done** — `c082a5b` |
-| 4a/4b/4c — Reproducible training + metrics doc | B4 | **Done** — `d05fe19` |
-| 5 — Packaging comment | C1 (C2 declined) | **Done** — `f23c65c` |
-| 6 — Smoke tests; CI optional | C3 | **Out of scope** (client, 2026-07-27) — no test files in this repo. |
-| 7 — Docs and hygiene | C4–C8 | **Done** — `7bb1f2d` |
+> **Status overlay — reconciled against the codebase 2026-07-29.** When this plan
+> was written, `main` was at `62675ac` and Phases 2–5 and 7 lived on the unmerged
+> branch `claude/plan-phases-2-5-71wsyr`. **Those phases have since merged to
+> `main`** (commits `c8e8e69`..`7bb1f2d`), and follow-up commits refined them
+> further; `main` is now at `ee8b474`. Each row's status is verified directly
+> against `origin/main` (`git log` / `git show` over the committed tree), and
+> every Phase heading below carries an inline **Status** line.
+>
+> Legend — ✅ **Done** (implemented on `main`) · ⛔ **Deferred** (a live client
+> decision, intentionally left as-is) · 🔲 **To do** (still open — client input or
+> a follow-up commit).
 
-**Phase 1 is now the only open item.** Nothing in Phases 2–5 or 7 was executed
-end to end: there is still no training data and no GPU in this environment.
-Verification was static plus targeted unit-level execution of the extracted
-logic — details under "What was verified" below.
+| Phase | Covers | Status on `main` |
+|---|---|---|
+| 1 — Make the promises true | A1, A2, A3 | 🔲 To do — the artifacts still do not ship, but the documentation-honesty fallback partly landed: the README no longer claims files a fresh clone lacks (`67f05a6`, `b69cf35`). See Phase 1. |
+| 2 — Normalization asymmetry | B1 | ✅ Done — `c8e8e69` |
+| 3 — Fail loudly | B2, B3 | ✅ Done — `c082a5b` |
+| 4 — Reproducible training + metrics doc | B4 | ✅ Done — `d05fe19`; seeding mechanism later corrected in `1006e0e` |
+| 5 — Packaging comment | C1 (C2 declined) | ✅ Done — `f23c65c` |
+| 6 — Smoke tests; CI | C3 | ⛔ Deferred — out of scope (client, 2026-07-27); no test files in this repo |
+| 7 — Docs and hygiene | C4–C8 | ✅ Done — `7bb1f2d`; data docs relocated & mount simplified in `17c82ac`, metrics comment corrected in `26f1f9c` |
+
+**Net:** Phases 2–5 and 7 are done and on `main`; **Phase 1 is the only phase with
+open work** — the sample cube, the trained bundle, and the executed HTML exports
+still do not ship, though the README claims that pointed at them have been
+corrected (A3's false claim removed, A1's framing softened). **C2**, **C3 /
+Phase 6** are the deliberate deferrals. Nothing in Phases 2–5 or 7 was executed
+end to end — there is still no training data and no GPU in this environment;
+verification was static plus targeted unit-level execution of the extracted
+logic (details under "What was verified" below).
 
 ---
 
@@ -33,11 +51,22 @@ recoverable from the repo itself.
 
 ### Repo state
 
-**As of 2026-07-27, `main` is at `62675ac`. Phases 2–5 and 7 are implemented on
-`claude/plan-phases-2-5-71wsyr` (five commits, `c8e8e69`..`7bb1f2d`) and pushed;
-that branch is not yet merged.** Any further work starts from that branch, not
-from `main`. Every phase in this plan except Phase 1 is now either done or
-declined, so there is nothing left to implement without new artifacts.
+**Updated 2026-07-29. `main` is now at `ee8b474`. Phases 2–5 and 7 (`c8e8e69`..`7bb1f2d`)
+have been merged into `main`,** so the branch `claude/plan-phases-2-5-71wsyr` is no
+longer the place to start — begin from `main`. Every phase in this plan except
+Phase 1 is now either done or declined, so there is nothing left to implement
+without new artifacts.
+
+Six follow-up commits landed on `main` after the phase merge and refine it; do
+not redo them:
+
+| Commit | What changed |
+|--------|--------------|
+| `17c82ac` | Made `data/` purely the mount: `data/README.md` → `docs/data.md`, `data/sample/README.md` → `examples/README.md`, `.gitignore` collapsed to a plain `data/`. The "the mount hides `data/sample/`" warning (Phase 7 / C8) was **deleted** rather than documented, because nothing is committed under `data/` any more. |
+| `1006e0e` | Replaced Phase 4a's `tf.keras.utils.set_random_seed(42)` with three direct seed calls (`random.seed`/`np.random.seed`/`tf.random.set_seed`). `set_random_seed` crashed the first `Conv1D` build on Python 3.12 + tf_keras 2.17 (`'float' object cannot be interpreted as an integer`); the direct calls keep determinism unchanged. |
+| `26f1f9c` | Corrected the `paths.metrics_dir` comments (C6): the CSVs were **never committed** — cell 59 wrote them untracked into `notebooks/`, a hazard, not an incident. |
+| `6da1e5f`, `f2628e9` | Trimmed the `metrics_dir` comments. |
+| `ee8b474` | Labeling changes. |
 
 Pre-audit cleanup, already on `main`; do not redo:
 
@@ -49,7 +78,7 @@ Pre-audit cleanup, already on `main`; do not redo:
 | `4d73b17` | Simplified the devcontainer Dockerfile (dropped the unused `python3-pyqt5` apt install). |
 | `62ca834` | Added `"postCreateCommand": "python -m pip install --no-cache-dir -e ."` to `devcontainer.json`. |
 
-Phases 2–5 and 7, on `claude/plan-phases-2-5-71wsyr`:
+Phases 2–5 and 7 — implemented on `claude/plan-phases-2-5-71wsyr`, now merged to `main`:
 
 | Commit | Phase | What changed |
 |--------|-------|--------------|
@@ -105,8 +134,9 @@ diff.
 Cell numbers below are **0-based indices into `nb['cells']`, counting markdown
 cells**. They are *not* Jupyter's displayed numbering. Phases 2–5 and 7 edited
 cells **in place only** — no cell was inserted or removed, so the indices below
-are unchanged from the original audit and were re-verified against
-`claude/plan-phases-2-5-71wsyr`. Still locate cells by content:
+are unchanged from the original audit and were re-verified against `main`. The
+post-merge follow-ups (`1006e0e` on cell 2, `26f1f9c` on cell 59) also edited in
+place, so the indices still hold. Still locate cells by content:
 
 ```python
 import json
@@ -117,7 +147,7 @@ hits = [i for i, c in enumerate(nb['cells'])
 
 | Purpose | Anchor text | Cell |
 |---------|-------------|------|
-| Setup / seeding | `tf.keras.utils.set_random_seed(42)` | 2 |
+| Setup / seeding | `tf.random.set_seed(42)` *(was `tf.keras.utils.set_random_seed(42)` until `1006e0e`; the old name now survives only in that cell's explanatory comment)* | 2 |
 | ROI loader + normalization | `if is_piloted_source(roi_filename):` *(was `if "crisfield" in roi_filename.lower():`)* | 26 |
 | Array assembly (library + ROI concat) | `plant_array = np.concatenate((sc.name,` | 29 |
 | Label encoding — defines `y_plant_labels`, used by 4b's guard | `y_plant_labels = np.unique(plant_array)` | 32 |
@@ -155,9 +185,12 @@ item, C7's unused `import json`). Any output at all is therefore new.
 ## Verdict
 
 **Still not ready to hand over — for one reason, and only one.** The repo does
-not contain the artifacts its own README promises: there is no trained model and
+not contain the artifacts it is meant to ship: there is no trained model and
 no sample data, so a client who clones this cannot run either notebook. That is
-Phase 1, which is on hold pending the client.
+Phase 1. Its documentation half has since been made honest — the README no longer
+*claims* files a fresh clone lacks (`67f05a6`, `b69cf35`) — so what is left is
+strictly the artifacts (or the client's decision not to ship them), still pending
+the client.
 
 Everything else the audit found is closed. The correctness issues (B1–B4) are
 fixed; the packaging and hygiene items (C1, C2, C4–C8) are either resolved or
@@ -173,27 +206,32 @@ the history.
 
 ### A. Blocking — the repo does not do what it says
 
-**Status: unchanged. All three are open (Phase 1, on hold).**
+**Status (2026-07-29): the missing artifacts are still missing, but the false
+*claims* that pointed at them have been corrected.** The documentation-honesty
+fallback of Phase 1 (option 2) partly landed: A3's claim was removed and A1's
+framing softened, so a reader is no longer sent to look for files that are not
+there. Shipping the artifacts themselves remains Phase 1, on hold pending the
+client.
 
-| # | Finding | Evidence |
-|---|---------|----------|
-| A1 | **No model bundle.** `models/example_model_v1/` holds only `README.md` and `model_card.md`. None of `model.keras`, `scaler.pkl`, `label_maps.json`, `wavelengths.json` exist. | `README.md:52` — "holds four coupled files that must always travel together". Notebook 02 cell 3 calls `tf.keras.models.load_model(...)` and will raise immediately. |
-| A2 | **No sample data.** `data/sample/` holds only `README.md`. | `README.md:46` — "Small committed sample so a fresh clone runs". `config.yaml` points `image: data/sample/raw_0_ref`. |
-| A3 | **No executed HTML exports in `docs/`.** Only `model_card.md` and `recording_runbook.md`. | `README.md:47` — "docs/ Model card + executed HTML exports of the notebooks". `docs/recording_runbook.md:100` describes generating them. |
+| # | Finding | Evidence | Status |
+|---|---------|----------|--------|
+| A1 | **No model bundle.** `models/example_model_v1/` holds only `README.md` and `model_card.md`. None of `model.keras`, `scaler.pkl`, `label_maps.json`, `wavelengths.json` exist. | Notebook 02 cell 3 calls `tf.keras.models.load_model(...)` and will raise immediately. | 🔲 To do — bundle still absent; the README's "holds four coupled files" was softened to "is written to hold" (`b69cf35`) so it no longer asserts the files are present. |
+| A2 | **No sample data.** `data/` no longer holds committed content (`17c82ac`); `examples/` is a placeholder README only. | `config.yaml` still points `image: data/sample/raw_0_ref`, which resolves only inside the devcontainer mount. | 🔲 To do — no sample cube ships; whether one should is an open client decision. |
+| A3 | **No executed HTML exports in `docs/`.** `docs/` holds `data.md`, `model_card.md` and `recording_runbook.md`. | Producing the HTML is an action item in `docs/recording_runbook.md` §4, not a committed artifact. | ✅ Done (claim) — the README's "executed HTML exports of the notebooks" claim was dropped (`67f05a6`); the exports themselves are still an unshipped action item, no longer a false promise. |
 
 A1 and A2 are *not* caused by `.gitignore`. I verified with `git check-ignore`
-that all four bundle files and `data/sample/raw_0_ref*` are trackable — the
-negation rules (`!models/example_model_v1/`, `!data/sample/`) work correctly.
-The files were simply never committed.
+that all four bundle files were trackable — the files were simply never
+committed. (`data/sample/` itself has since been removed from the tree by
+`17c82ac`, which made `data/` purely the mount.)
 
 ### B. Correctness
 
 | # | Finding | Location | Status |
 |---|---------|----------|--------|
-| B1 | **Filename-triggered normalization, asymmetric between train and predict.** Prediction normalized on `"crisfield"` **or** `"piloted"`; training on `"crisfield"` only. | `batch_predict.py` vs. notebook 01 cell 26 | **Fixed** `c8e8e69` — both sides now call `upwins_veg.preprocessing`. |
-| B2 | **Failures are swallowed and reported as success.** A run that classified nothing still printed "Batch processing complete". | `batch_predict.py` | **Fixed** `c082a5b` — `classify_and_save_image` raises; `batch_classify` prints each failure and a final "N of M" count. |
-| B3 | **Bare `except: continue`** silently drops spectral-library rows that fail to parse. | `spectral_collection.py:111` | **Fixed** `c082a5b` — narrowed to `(KeyError, IndexError)`, skipped rows counted and reported. |
-| B4 | **Training is not reproducible;** splits not stratified. | notebook 01 cells 2 and 34 | **Fixed** `d05fe19` — `set_random_seed(42)`; both splits stratified on `plant` with a min-3-per-class guard. |
+| B1 | **Filename-triggered normalization, asymmetric between train and predict.** Prediction normalized on `"crisfield"` **or** `"piloted"`; training on `"crisfield"` only. | `batch_predict.py` vs. notebook 01 cell 26 | ✅ Done `c8e8e69` — both sides now call `upwins_veg.preprocessing`. |
+| B2 | **Failures are swallowed and reported as success.** A run that classified nothing still printed "Batch processing complete". | `batch_predict.py` | ✅ Done `c082a5b` — `classify_and_save_image` raises; `batch_classify` prints each failure and a final "N of M" count. |
+| B3 | **Bare `except: continue`** silently drops spectral-library rows that fail to parse. | `spectral_collection.py:111` | ✅ Done `c082a5b` — narrowed to `(KeyError, IndexError)`, skipped rows counted and reported. |
+| B4 | **Training is not reproducible;** splits not stratified. | notebook 01 cells 2 and 34 | ✅ Done `d05fe19` — deterministic seeding (the initial `set_random_seed(42)` was replaced by direct seed calls in `1006e0e`; see Phase 4a); both splits stratified on `plant` with a min-3-per-class guard. |
 
 Two residual notes on B3: the `try` block still spans the whole per-row append
 sequence, so a mid-block failure could in principle append to some metadata lists
@@ -206,14 +244,14 @@ concern.
 
 | # | Finding | Location | Status |
 |---|---------|----------|--------|
-| C1 | `pyproject.toml` declares **no `dependencies`**, so the installed package carries no dependency metadata. `pip install -e .` is the correct mechanism and works — it makes `upwins_veg` importable project-wide, which is its purpose — but it installs no third-party packages. **Low practical impact**; the documented workflow and the devcontainer both install `requirements.txt` first. | `pyproject.toml` | **Closed as documented** `f23c65c`. Comments in both files record that `requirements.txt` is the single source of truth. No functional change, by decision. |
-| C2 | `license = {text = "MIT"}` table form; no `authors`, `urls`, `classifiers`. | `pyproject.toml` | **Declined in full** (client, 2026-07-27). `f23c65c` adds a comment recording *why*, so it is not re-raised as an oversight. |
-| C3 | **No tests and no CI.** | — | **Out of scope** (client, 2026-07-27) — no test files in this repo. See Phase 6. |
-| C4 | `model_card.md` is a **byte-identical duplicate** in `docs/` and `models/example_model_v1/`. | both files | **Fixed** `7bb1f2d` — the `models/` copy is now a stub pointing at `docs/model_card.md`. |
-| C5 | **Unfilled placeholders** in client-facing docs. | model cards, `data/README.md` | **Partly fixed** `7bb1f2d` — everything derivable from the code is filled in; the rest is an explicit checklist. The remaining blanks need the bundle or the data owner. |
-| C6 | Metric CSVs written to the **current working directory**, not gitignored. | notebook 01 cell 59 | **Fixed** `7bb1f2d` — written to `paths.metrics_dir` (`data/metrics`, gitignored), plus a `classification_report_*.csv` ignore rule. |
-| C7 | Unused `import json`. | `spectral_collection.py:7` | **Fixed** `7bb1f2d`. |
-| C8 | Devcontainer bind-mount hardcodes a **developer-specific path**. | `devcontainer.json:31` | **Fixed as documented** `7bb1f2d` — path left hardcoded by decision; README, `data/README.md` and a comment on the `mounts` line explain it. |
+| C1 | `pyproject.toml` declares **no `dependencies`**, so the installed package carries no dependency metadata. `pip install -e .` is the correct mechanism and works — it makes `upwins_veg` importable project-wide, which is its purpose — but it installs no third-party packages. **Low practical impact**; the documented workflow and the devcontainer both install `requirements.txt` first. | `pyproject.toml` | ✅ Done (documented) `f23c65c`. Comments in both files record that `requirements.txt` is the single source of truth. No functional change, by decision. |
+| C2 | `license = {text = "MIT"}` table form; no `authors`, `urls`, `classifiers`. | `pyproject.toml` | ⛔ Deferred — declined in full (client, 2026-07-27). `f23c65c` adds a comment recording *why*, so it is not re-raised as an oversight. |
+| C3 | **No tests and no CI.** | — | ⛔ Deferred — out of scope (client, 2026-07-27); no test files in this repo. See Phase 6. |
+| C4 | `model_card.md` is a **byte-identical duplicate** in `docs/` and `models/example_model_v1/`. | both files | ✅ Done `7bb1f2d` — the `models/` copy is now a stub pointing at `docs/model_card.md`. |
+| C5 | **Unfilled placeholders** in client-facing docs. | model cards, `docs/data.md` | ✅ Done (partial) `7bb1f2d` — everything derivable from the code is filled in; the rest is an explicit checklist. The remaining blanks need the bundle or the data owner. |
+| C6 | Metric CSVs written to the **current working directory**, not gitignored. | notebook 01 cell 59 | ✅ Done `7bb1f2d` — written to `paths.metrics_dir` (`data/metrics`, gitignored), plus a `classification_report_*.csv` ignore rule; comment framing corrected in `26f1f9c` (the CSVs were never committed — an untracked-accumulation hazard, not an incident). |
+| C7 | Unused `import json`. | `spectral_collection.py:7` | ✅ Done `7bb1f2d`. |
+| C8 | Devcontainer bind-mount hardcodes a **developer-specific path**. | `devcontainer.json:31` | ✅ Done (documented) `7bb1f2d`, then simplified by `17c82ac` — `data/` is now purely the mount, its docs moved to `docs/data.md`, and the "mount hides `data/sample/`" warning was removed (nothing is committed under `data/` any more). Path left hardcoded by decision; README, `docs/data.md` and a comment on the `mounts` line explain it. |
 
 ---
 
@@ -222,27 +260,44 @@ concern.
 Ordered by what unblocks the handoff. Each phase is one commit; phases are
 independent, so you can approve any subset.
 
-### Phase 1 — Make the promises true (blocks handoff; needs you) — ON HOLD
+### Phase 1 — Make the promises true (blocks handoff; needs you) — PARTIAL
 
-**A1, A2, A3.** I cannot fix these myself: generating the bundle needs your ROI
-data and a GPU, and I have neither. Two ways to close it:
+> **Status: 🔲 To do (artifacts) / ✅ partially done (docs).** The bundle, the
+> sample cube, and the executed HTML exports still do not ship. The
+> documentation-honesty fallback (option 2) has partly landed on `main`, so the
+> docs no longer *claim* those absent files: `67f05a6` dropped the README's "two
+> notebooks" (there are three) and "executed HTML exports" claims and softened the
+> `models/` framing; `b69cf35` softened the "## The model bundle" section from
+> "holds four coupled files" to "is written to hold"; `17c82ac` moved the data
+> docs to `docs/data.md` / `examples/README.md`. What remains is either the
+> artifacts themselves or the client's call on whether they ship.
+
+**A1, A2, A3.** I cannot supply the artifacts myself: generating the bundle needs
+your ROI data and a GPU, and I have neither. Two ways to close it:
 
 - **You supply the artifacts.** Run notebook 01 to produce the bundle, drop a
-  cropped cube plus a few ROIs into `data/sample/`, and I commit them, verify
+  cropped cube plus a few ROIs into `examples/`, and I commit them, verify
   `git check-ignore` passes them, run notebook 02 against the sample, and export
   the executed HTML to `docs/`.
-- **I correct the documentation instead.** Rewrite README, `data/README.md`,
+- **I correct the documentation instead.** *(Partly done — see the Status note
+  above.)* Rewrite README, `docs/data.md`,
   `models/example_model_v1/README.md` and the model cards to state plainly that
   the bundle and sample are distributed separately, with instructions to train
   first. Honest, but the client loses the run-from-clone experience.
 
-I recommend the first. The second is a fallback if the artifacts can't be shared.
+I recommend the first. The second is a fallback if the artifacts can't be shared;
+its documentation half is already in place, so if you decide against shipping
+artifacts, this finding is essentially closed.
 
 **One change since the plan was written:** Phase 4b altered the split, so any
 bundle produced now will differ from one produced before. That is the intended
 order — 4b landed first, exactly so Phase 1 would not have to be redone.
 
 ### Phase 2 — Fix the normalization asymmetry (B1) — DONE (`c8e8e69`)
+
+> **Status: ✅ Done on `main`.** `src/upwins_veg/preprocessing.py` ships
+> `PILOTED_SOURCE_PATTERNS`, `is_piloted_source`, and `pixel_wise_normalize`; both
+> notebook 01 cell 26 and `batch_predict.py` call them.
 
 **Resolved with the client (2026-07-27):** `"crisfield"` and `"piloted"` name the
 same thing — data captured from a piloted platform. All crisfield data in the
@@ -298,6 +353,11 @@ the filename — renames silently change preprocessing. That is a change in the
 
 ### Phase 3 — Fail loudly (B2, B3) — DONE (`c082a5b`)
 
+> **Status: ✅ Done on `main`.** `classify_and_save_image` raises; `batch_classify`
+> reports each failure and an "N of M" count; the bare `except:` in
+> `spectral_collection.py` is narrowed to `(KeyError, IndexError)` with a
+> skipped-row report.
+
 - `classify_and_save_image` no longer catches. Its `finally` block (which
   releases the memmap and forces a `gc.collect()`) is kept, so cleanup still runs
   on the way out; only the `except Exception` that turned a failure into a
@@ -320,11 +380,21 @@ reporting errors. That's the point, but it may surface pre-existing data issues.
 
 ### Phase 4 — Reproducible training (B4) — DONE (`d05fe19`)
 
-**4a. Seeding.** `tf.keras.utils.set_random_seed(42)` added to notebook 01's
-setup cell (cell 2), immediately before the `# --- Configuration ---` block. It
-seeds Python, NumPy and TensorFlow in one call. A comment there, and a
-Provenance bullet in the model card, record that exact reproducibility also
-requires the pinned versions in `requirements.txt`.
+> **Status: ✅ Done on `main`.** Deterministic seeding is in cell 2 and the split
+> in cell 34 is stratified on `plant` with the min-3-per-class guard. **The
+> seeding mechanism changed after the merge:** `1006e0e` replaced
+> `tf.keras.utils.set_random_seed(42)` with three direct seed calls — see 4a.
+
+**4a. Seeding.** *Originally* `tf.keras.utils.set_random_seed(42)` was added to
+notebook 01's setup cell (cell 2), immediately before the `# --- Configuration ---`
+block. **`1006e0e` then replaced it** with three explicit calls —
+`random.seed(42)`, `np.random.seed(42)`, `tf.random.set_seed(42)` — because
+`set_random_seed` installs a seed generator that made the first `Conv1D` build
+raise `'float' object cannot be interpreted as an integer` on Python 3.12 +
+tf_keras 2.17. The three direct calls seed Python, NumPy and TensorFlow with
+determinism unchanged, and keep tf_keras on its integer initializer-seed branch.
+A comment there, and a Provenance bullet in the model card, record that exact
+reproducibility also requires the pinned versions in `requirements.txt`.
 
 **4b. Stratified split on `plant`.** The body of cell 34 above
 `X_train, X_val, X_test = ...` is now:
@@ -404,6 +474,9 @@ order the plan called for.
 
 ### Phase 4c — Document what the metrics measure (docs only) — DONE (`d05fe19`)
 
+> **Status: ✅ Done on `main`.** `docs/model_card.md` carries the Metrics section
+> (leakage block quote + the three-cell mapping table).
+
 The client has decided against a group split (see Future work), so pixels from
 one ROI appear in both train and test. Held-out accuracy therefore reads higher
 than performance on a fresh image with no ROIs — which is the thing the client
@@ -429,6 +502,10 @@ so the two copies stayed byte-identical and C4 was left exactly as it was. Phase
 then replaced that copy with a stub, so `docs/model_card.md` is now the only one.
 
 ### Phase 5 — Packaging comment only (C1; C2 declined) — DONE (`f23c65c`)
+
+> **Status: ✅ Done on `main` (C1) · ⛔ Deferred (C2).** Explanatory comments in
+> `pyproject.toml` and `requirements.txt` shipped; no functional packaging change,
+> and the `license` table form is deliberately kept.
 
 **Decided 2026-07-27: no functional packaging changes.** `pip install -e .` is
 the right mechanism and works as intended — it puts `upwins_veg` on the path so
@@ -463,6 +540,9 @@ deliberately alongside it.
 
 ### Phase 6 — Smoke tests (C3) — OUT OF SCOPE
 
+> **Status: ⛔ Deferred.** Closed as out of scope by the client (2026-07-27); no
+> test files in this repo, CI moot along with it.
+
 **Declined by the client, 2026-07-27: no test files in this repo.** C3 is closed
 on that basis, not deferred. CI is moot along with it — there would be nothing
 for a workflow to run.
@@ -481,6 +561,14 @@ repo. Nothing covers the import and unpickle paths automatically; they have to b
 exercised by actually running notebook 01, which is the same thing Phase 1 needs.
 
 ### Phase 7 — Docs and hygiene (C4–C8) — DONE (`7bb1f2d`)
+
+> **Status: ✅ Done on `main`.** All of C4–C8 shipped in `7bb1f2d`; two items were
+> refined afterward. `26f1f9c` corrected C6's comment wording (the CSVs were never
+> committed). `17c82ac` reworked C8: it made `data/` purely the mount, moved
+> `data/README.md` → `docs/data.md` and `data/sample/README.md` → `examples/README.md`,
+> collapsed `.gitignore` to a plain `data/`, and **deleted** the "the mount hides
+> `data/sample/`" warning — with nothing committed under `data/`, there is nothing
+> for the mount to hide. Read the C6/C8 notes below with those follow-ups applied.
 
 **C4 — model card deduplicated.** `models/example_model_v1/model_card.md` is now
 a four-line stub linking to `docs/model_card.md`, which is the only copy. The two
@@ -581,8 +669,12 @@ Not verified, and not verifiable here:
    pushed to `claude/plan-phases-2-5-71wsyr`.
 5. ~~Phase 6.~~ **Answered 2026-07-27** — out of scope, no test files in this
    repo.
-6. **Open:** whether to merge `claude/plan-phases-2-5-71wsyr`. No PR has been
-   opened. Phase 1 is the only remaining work in this plan, and it needs you.
+6. ~~Whether to merge `claude/plan-phases-2-5-71wsyr`.~~ **Resolved** — those
+   phases are now merged to `main` (`c8e8e69`..`7bb1f2d`), with follow-up
+   refinements on top (`main` at `ee8b474`). **Phase 1 is the only remaining work
+   in this plan, and it needs you** — the sample cube, the trained bundle, and the
+   executed HTML exports. The README claims that pointed at them have already been
+   corrected.
 
 ## Open questions (unresolved; not blocking any phase)
 
