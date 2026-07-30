@@ -1,9 +1,10 @@
 # Example data
 
-Placeholder — **nothing ships here yet.** Whether a small runnable example is
-committed to this repo is still an open decision.
+**No runnable example ships in this repo.** The notebooks run against your own
+data: obtain the dataset (see `docs/data.md`) and point `config.yaml` at it.
 
-If one is added, drop it here so the notebooks run from a fresh clone:
+If you later want a small committed example so the notebooks run from a fresh
+clone, drop it here:
 
 - A spatially cropped ENVI reflectance cube (e.g. 200x200) named
   `raw_0_ref` + `raw_0_ref.hdr`.
@@ -11,9 +12,7 @@ If one is added, drop it here so the notebooks run from a fresh clone:
 
 Then point `paths.image`, `paths.image_hdr` and `prediction.input_hdr` (and
 `paths.roi_dir`, if the ROIs go here too) at `examples/...` in `config.yaml`.
-
-Keep the whole committed example well under ~50 MB so cloning stays fast. Use
-your full data for the recorded tutorial by editing `config.yaml`.
+Keep the whole committed example well under ~50 MB so cloning stays fast.
 
 ## Why this is not under `data/`
 

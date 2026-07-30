@@ -43,7 +43,7 @@ notebooks/               The three deliverable notebooks (run in order).
 src/upwins_veg/          Importable support code (installed via `pip install -e .`).
 src/hsiViewer/           Stand-in ROIs_class so ROI pickles load without the PyQt viewer.
 models/example_model_v1/ Where notebook 01 writes the model bundle -- not populated in a fresh clone; see its README.
-examples/                Placeholder for a small runnable example (not yet populated).
+examples/                No runnable example ships; run against your own data -- see its README.
 data/                    Not committed -- external data and run outputs; see docs/data.md.
 docs/                    Model card, data guide, and recording runbook.
 ```
@@ -57,6 +57,9 @@ always travel together — a mismatch silently produces wrong class names:
 - `scaler.pkl` — the `StandardScaler` fit on the training spectra
 - `label_maps.json` — maps each output index to a class name
 - `wavelengths.json` — the band centers the model expects (checked at predict time)
+
+These are **produced by running notebook 01, not distributed with the repo** — a
+fresh clone must train first to populate the bundle before running prediction.
 
 ## Data
 

@@ -14,6 +14,8 @@ paths:
 
   # Reference reflectance image used to read the sensor's band centers
   # (ENVI cube: give the file with and without the .hdr extension).
+  # No image ships in the repo -- this is an illustrative default; edit it to
+  # point at your own reflectance cube (see docs/data.md).
   image:     data/sample/raw_0_ref
   image_hdr: data/sample/raw_0_ref.hdr
 

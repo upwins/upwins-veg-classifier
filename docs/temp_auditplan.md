@@ -6,6 +6,11 @@ Audited 2026-07-27 on branch `claude/dockerfile-pip-install-editable-fup5kp`.
 `claude/plan-phases-2-5-71wsyr`. Phase 6 was declined by the client.
 **Status reconciled 2026-07-29** against the committed tree — see the overlay
 below.
+**Closed out 2026-07-30:** the client decided **not to ship any artifacts**
+(no A1, A2, A3 — no model bundle, sample data, or executed HTML exports) and
+**not to ship test files** (Phase 6). Phase 1 is therefore resolved by the
+documentation path, not by shipping artifacts; every phase in this plan is now
+either done or a recorded decision. See the Phase 1 and Phase 6 sections.
 
 ---
 
@@ -25,22 +30,22 @@ below.
 
 | Phase | Covers | Status on `main` |
 |---|---|---|
-| 1 — Make the promises true | A1, A2, A3 | 🔲 To do — the artifacts still do not ship, but the documentation-honesty fallback partly landed: the README no longer claims files a fresh clone lacks (`67f05a6`, `b69cf35`). See Phase 1. |
+| 1 — Make the promises true | A1, A2, A3 | ✅ Done (by decision) — client decided **not to ship artifacts** (2026-07-30). The docs are made honest instead: the README and the `models/`, `examples/` and `data/` docs state plainly that the bundle and data are produced/obtained separately, not distributed with the repo. See Phase 1. |
 | 2 — Normalization asymmetry | B1 | ✅ Done — `c8e8e69` |
 | 3 — Fail loudly | B2, B3 | ✅ Done — `c082a5b` |
 | 4 — Reproducible training + metrics doc | B4 | ✅ Done — `d05fe19`; seeding mechanism later corrected in `1006e0e` |
 | 5 — Packaging comment | C1 (C2 declined) | ✅ Done — `f23c65c` |
-| 6 — Smoke tests; CI | C3 | ⛔ Deferred — out of scope (client, 2026-07-27); no test files in this repo |
+| 6 — Smoke tests; CI | C3 | ⛔ Declined — no test files in this repo (client, 2026-07-27, reaffirmed 2026-07-30); CI moot along with it |
 | 7 — Docs and hygiene | C4–C8 | ✅ Done — `7bb1f2d`; data docs relocated & mount simplified in `17c82ac`, metrics comment corrected in `26f1f9c` |
 
-**Net:** Phases 2–5 and 7 are done and on `main`; **Phase 1 is the only phase with
-open work** — the sample cube, the trained bundle, and the executed HTML exports
-still do not ship, though the README claims that pointed at them have been
-corrected (A3's false claim removed, A1's framing softened). **C2**, **C3 /
-Phase 6** are the deliberate deferrals. Nothing in Phases 2–5 or 7 was executed
-end to end — there is still no training data and no GPU in this environment;
-verification was static plus targeted unit-level execution of the extracted
-logic (details under "What was verified" below).
+**Net:** every phase is now closed. Phases 2–5 and 7 are implemented on `main`;
+**Phase 1 is resolved by the documentation path** — the client decided not to
+ship the sample cube, the trained bundle, or the executed HTML exports, so the
+docs are made honest about their absence rather than the artifacts being added.
+**C2** and **C3 / Phase 6** are the recorded declines. Nothing in Phases 2–5 or 7
+was executed end to end — there is still no training data and no GPU in this
+environment; verification was static plus targeted unit-level execution of the
+extracted logic (details under "What was verified" below).
 
 ---
 
@@ -53,9 +58,10 @@ recoverable from the repo itself.
 
 **Updated 2026-07-29. `main` is now at `ee8b474`. Phases 2–5 and 7 (`c8e8e69`..`7bb1f2d`)
 have been merged into `main`,** so the branch `claude/plan-phases-2-5-71wsyr` is no
-longer the place to start — begin from `main`. Every phase in this plan except
-Phase 1 is now either done or declined, so there is nothing left to implement
-without new artifacts.
+longer the place to start — begin from `main`. Every phase in this plan is now
+either done or a recorded decision: Phase 1 was closed on 2026-07-30 by the
+client's decision not to ship artifacts (the docs are made honest instead), and
+Phase 6 stays declined. There is nothing left to implement.
 
 Six follow-up commits landed on `main` after the phase merge and refine it; do
 not redo them:
@@ -184,13 +190,12 @@ item, C7's unused `import json`). Any output at all is therefore new.
 
 ## Verdict
 
-**Still not ready to hand over — for one reason, and only one.** The repo does
-not contain the artifacts it is meant to ship: there is no trained model and
-no sample data, so a client who clones this cannot run either notebook. That is
-Phase 1. Its documentation half has since been made honest — the README no longer
-*claims* files a fresh clone lacks (`67f05a6`, `b69cf35`) — so what is left is
-strictly the artifacts (or the client's decision not to ship them), still pending
-the client.
+**Ready to hand over.** The one item that had blocked handoff — the missing
+artifacts (no trained model, no sample data) — is now a settled decision: the
+client chose **not to ship them** (2026-07-30). A fresh clone therefore cannot
+run the notebooks without the user first obtaining data and training a model,
+and the docs now say exactly that instead of implying the files are present.
+That closes Phase 1.
 
 Everything else the audit found is closed. The correctness issues (B1–B4) are
 fixed; the packaging and hygiene items (C1, C2, C4–C8) are either resolved or
@@ -206,18 +211,19 @@ the history.
 
 ### A. Blocking — the repo does not do what it says
 
-**Status (2026-07-29): the missing artifacts are still missing, but the false
-*claims* that pointed at them have been corrected.** The documentation-honesty
-fallback of Phase 1 (option 2) partly landed: A3's claim was removed and A1's
-framing softened, so a reader is no longer sent to look for files that are not
-there. Shipping the artifacts themselves remains Phase 1, on hold pending the
-client.
+**Status (2026-07-30): closed by the client's decision not to ship artifacts.**
+The bundle, the sample data, and the executed HTML exports are intentionally
+not distributed with the repo, and the documentation is made honest about that:
+no doc claims a file a fresh clone lacks, and every place a reader might expect
+one now states plainly that it is produced by training or obtained separately.
+Phase 1 is resolved on the documentation path; shipping artifacts is no longer
+planned.
 
 | # | Finding | Evidence | Status |
 |---|---------|----------|--------|
-| A1 | **No model bundle.** `models/example_model_v1/` holds only `README.md` and `model_card.md`. None of `model.keras`, `scaler.pkl`, `label_maps.json`, `wavelengths.json` exist. | Notebook 02 cell 3 calls `tf.keras.models.load_model(...)` and will raise immediately. | 🔲 To do — bundle still absent; the README's "holds four coupled files" was softened to "is written to hold" (`b69cf35`) so it no longer asserts the files are present. |
-| A2 | **No sample data.** `data/` no longer holds committed content (`17c82ac`); `examples/` is a placeholder README only. | `config.yaml` still points `image: data/sample/raw_0_ref`, which resolves only inside the devcontainer mount. | 🔲 To do — no sample cube ships; whether one should is an open client decision. |
-| A3 | **No executed HTML exports in `docs/`.** `docs/` holds `data.md`, `model_card.md` and `recording_runbook.md`. | Producing the HTML is an action item in `docs/recording_runbook.md` §4, not a committed artifact. | ✅ Done (claim) — the README's "executed HTML exports of the notebooks" claim was dropped (`67f05a6`); the exports themselves are still an unshipped action item, no longer a false promise. |
+| A1 | **No model bundle.** `models/example_model_v1/` holds only `README.md` and `model_card.md`. None of `model.keras`, `scaler.pkl`, `label_maps.json`, `wavelengths.json` exist. | Notebook 02 cell 3 calls `tf.keras.models.load_model(...)` and will raise immediately. | ✅ Done (by decision) — bundle intentionally not shipped. The README's "The model bundle" section and `models/example_model_v1/README.md` now state the four files are produced by running notebook 01, not distributed with the repo (`67f05a6`, `b69cf35`, and the 2026-07-30 doc pass). |
+| A2 | **No sample data.** `data/` no longer holds committed content (`17c82ac`); `examples/` is a placeholder README only. | `config.yaml` points `image: data/sample/raw_0_ref`, an illustrative default a comment now flags as such. | ✅ Done (by decision) — no sample data ships. `examples/README.md`, the README layout line, and `config.yaml`'s comment all state that the notebooks run against your own data (see `docs/data.md`), not a committed sample. |
+| A3 | **No executed HTML exports in `docs/`.** `docs/` holds `data.md`, `model_card.md` and `recording_runbook.md`. | Producing the HTML is an action item in `docs/recording_runbook.md` §4, not a committed artifact. | ✅ Done — the README's "executed HTML exports of the notebooks" claim was dropped (`67f05a6`); the exports are a recorder action item in the runbook, not a promised committed artifact. |
 
 A1 and A2 are *not* caused by `.gitignore`. I verified with `git check-ignore`
 that all four bundle files were trackable — the files were simply never
@@ -246,7 +252,7 @@ concern.
 |---|---------|----------|--------|
 | C1 | `pyproject.toml` declares **no `dependencies`**, so the installed package carries no dependency metadata. `pip install -e .` is the correct mechanism and works — it makes `upwins_veg` importable project-wide, which is its purpose — but it installs no third-party packages. **Low practical impact**; the documented workflow and the devcontainer both install `requirements.txt` first. | `pyproject.toml` | ✅ Done (documented) `f23c65c`. Comments in both files record that `requirements.txt` is the single source of truth. No functional change, by decision. |
 | C2 | `license = {text = "MIT"}` table form; no `authors`, `urls`, `classifiers`. | `pyproject.toml` | ⛔ Deferred — declined in full (client, 2026-07-27). `f23c65c` adds a comment recording *why*, so it is not re-raised as an oversight. |
-| C3 | **No tests and no CI.** | — | ⛔ Deferred — out of scope (client, 2026-07-27); no test files in this repo. See Phase 6. |
+| C3 | **No tests and no CI.** | — | ⛔ Declined — out of scope (client, 2026-07-27, reaffirmed 2026-07-30); no test files in this repo. See Phase 6. |
 | C4 | `model_card.md` is a **byte-identical duplicate** in `docs/` and `models/example_model_v1/`. | both files | ✅ Done `7bb1f2d` — the `models/` copy is now a stub pointing at `docs/model_card.md`. |
 | C5 | **Unfilled placeholders** in client-facing docs. | model cards, `docs/data.md` | ✅ Done (partial) `7bb1f2d` — everything derivable from the code is filled in; the rest is an explicit checklist. The remaining blanks need the bundle or the data owner. |
 | C6 | Metric CSVs written to the **current working directory**, not gitignored. | notebook 01 cell 59 | ✅ Done `7bb1f2d` — written to `paths.metrics_dir` (`data/metrics`, gitignored), plus a `classification_report_*.csv` ignore rule; comment framing corrected in `26f1f9c` (the CSVs were never committed — an untracked-accumulation hazard, not an incident). |
@@ -260,38 +266,43 @@ concern.
 Ordered by what unblocks the handoff. Each phase is one commit; phases are
 independent, so you can approve any subset.
 
-### Phase 1 — Make the promises true (blocks handoff; needs you) — PARTIAL
+### Phase 1 — Make the promises true (A1, A2, A3) — DONE (by decision)
 
-> **Status: 🔲 To do (artifacts) / ✅ partially done (docs).** The bundle, the
-> sample cube, and the executed HTML exports still do not ship. The
-> documentation-honesty fallback (option 2) has partly landed on `main`, so the
-> docs no longer *claim* those absent files: `67f05a6` dropped the README's "two
-> notebooks" (there are three) and "executed HTML exports" claims and softened the
-> `models/` framing; `b69cf35` softened the "## The model bundle" section from
-> "holds four coupled files" to "is written to hold"; `17c82ac` moved the data
-> docs to `docs/data.md` / `examples/README.md`. What remains is either the
-> artifacts themselves or the client's call on whether they ship.
+> **Status: ✅ Done.** The client decided on **2026-07-30 not to ship any
+> artifacts** — no model bundle, no sample data, no executed HTML exports. Phase 1
+> is closed on the documentation path: rather than adding the files, the docs are
+> made honest that they are not distributed with the repo. The run-from-clone
+> experience is intentionally out of scope; a user obtains data and trains a model
+> first.
 
-**A1, A2, A3.** I cannot supply the artifacts myself: generating the bundle needs
-your ROI data and a GPU, and I have neither. Two ways to close it:
+**Decision (2026-07-30): the documentation path, not the artifacts.** Two ways to
+close Phase 1 were on the table — ship the artifacts, or correct the docs so they
+no longer imply the artifacts are present. The client chose the second.
 
-- **You supply the artifacts.** Run notebook 01 to produce the bundle, drop a
-  cropped cube plus a few ROIs into `examples/`, and I commit them, verify
-  `git check-ignore` passes them, run notebook 02 against the sample, and export
-  the executed HTML to `docs/`.
-- **I correct the documentation instead.** *(Partly done — see the Status note
-  above.)* Rewrite README, `docs/data.md`,
-  `models/example_model_v1/README.md` and the model cards to state plainly that
-  the bundle and sample are distributed separately, with instructions to train
-  first. Honest, but the client loses the run-from-clone experience.
+**What shipped (docs made honest):**
 
-I recommend the first. The second is a fallback if the artifacts can't be shared;
-its documentation half is already in place, so if you decide against shipping
-artifacts, this finding is essentially closed.
+- `models/example_model_v1/README.md` — no longer instructs "commit these four";
+  it states the bundle is produced by running notebook 01 and is not committed, so
+  a fresh clone must train first.
+- `README.md` — the "The model bundle" section notes the four files are produced
+  by training, not distributed with the repo; the layout line for `examples/`
+  states no runnable example ships.
+- `examples/README.md` — resolved from "open decision" to a plain statement that
+  no example ships and the notebooks run against your own data (`docs/data.md`).
+- `config.yaml` — a comment flags `paths.image`'s `data/sample/...` value as an
+  illustrative default to be edited to point at your own cube.
+- Earlier doc corrections that already landed remain in force: `67f05a6` dropped
+  the README's "executed HTML exports" and "two notebooks" (there are three)
+  claims; `b69cf35` softened the model-bundle framing; `17c82ac` moved the data
+  docs to `docs/data.md` / `examples/README.md`.
 
-**One change since the plan was written:** Phase 4b altered the split, so any
-bundle produced now will differ from one produced before. That is the intended
-order — 4b landed first, exactly so Phase 1 would not have to be redone.
+**Left as an unfilled slot, by design:** `docs/data.md`'s "Getting the full
+dataset" still carries a `TODO (data owner)` for the download link/DOI — that is
+the data owner's to fill, not an artifact this repo ships.
+
+**Note for any future retrain:** Phase 4b altered the split, so any bundle
+produced now will differ from one produced before the audit. That is the intended
+order — 4b landed first, exactly so a later retrain would not have to be redone.
 
 ### Phase 2 — Fix the normalization asymmetry (B1) — DONE (`c8e8e69`)
 
@@ -540,12 +551,13 @@ deliberately alongside it.
 
 ### Phase 6 — Smoke tests (C3) — OUT OF SCOPE
 
-> **Status: ⛔ Deferred.** Closed as out of scope by the client (2026-07-27); no
-> test files in this repo, CI moot along with it.
+> **Status: ⛔ Declined.** Closed as out of scope by the client (2026-07-27,
+> reaffirmed 2026-07-30); no test files in this repo, CI moot along with it.
 
-**Declined by the client, 2026-07-27: no test files in this repo.** C3 is closed
-on that basis, not deferred. CI is moot along with it — there would be nothing
-for a workflow to run.
+**Declined by the client, 2026-07-27 and reaffirmed 2026-07-30: no test files in
+this repo.** C3 is closed on that basis, not deferred. CI is moot along with it —
+there would be nothing for a workflow to run. Confirmed against the tree: the repo
+carries no test files and no `.github/workflows`.
 
 Recorded so the reasoning survives: the three tests that were drafted were an
 import check for `upwins_veg` and `hsiViewer` (the `src/` packaging bug that
@@ -657,24 +669,23 @@ Not verified, and not verifiable here:
 
 ## What I need from you
 
+**Nothing — every open question is now resolved.** For the record:
+
 1. ~~**Phase 2:** the correct normalization behavior for "piloted" imagery.~~
    **Answered 2026-07-27** — see Phase 2. Implemented.
-2. **Phase 1:** artifacts, or approval to rewrite the docs instead.
-   *Deferred by the client; code and docs cleanup first.* **Still the only thing
-   blocking handoff.**
+2. ~~**Phase 1:** artifacts, or approval to rewrite the docs instead.~~
+   **Answered 2026-07-30** — do **not** ship artifacts; the docs are made honest
+   about their absence instead. Phase 1 closed on the documentation path.
 3. ~~**Phase 4b:** whether to stratify, and whether to move to a group split.~~
    **Answered 2026-07-27** — stratify on `plant`; raise on a class with fewer
    than 3 spectra; no group split for now. Implemented.
 4. ~~Which phases to run.~~ **Answered** — 2 through 5, then 7. Both done and
    pushed to `claude/plan-phases-2-5-71wsyr`.
-5. ~~Phase 6.~~ **Answered 2026-07-27** — out of scope, no test files in this
-   repo.
+5. ~~Phase 6.~~ **Answered 2026-07-27, reaffirmed 2026-07-30** — out of scope, no
+   test files in this repo.
 6. ~~Whether to merge `claude/plan-phases-2-5-71wsyr`.~~ **Resolved** — those
    phases are now merged to `main` (`c8e8e69`..`7bb1f2d`), with follow-up
-   refinements on top (`main` at `ee8b474`). **Phase 1 is the only remaining work
-   in this plan, and it needs you** — the sample cube, the trained bundle, and the
-   executed HTML exports. The README claims that pointed at them have already been
-   corrected.
+   refinements on top (`main` at `ee8b474`).
 
 ## Open questions (unresolved; not blocking any phase)
 
