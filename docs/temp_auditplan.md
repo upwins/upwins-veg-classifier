@@ -37,15 +37,19 @@ either done or a recorded decision. See the Phase 1 and Phase 6 sections.
 | 5 — Packaging comment | C1 (C2 declined) | ✅ Done — `f23c65c` |
 | 6 — Smoke tests; CI | C3 | ⛔ Declined — no test files in this repo (client, 2026-07-27, reaffirmed 2026-07-30); CI moot along with it |
 | 7 — Docs and hygiene | C4–C8 | ✅ Done — `7bb1f2d`; data docs relocated & mount simplified in `17c82ac`, metrics comment corrected in `26f1f9c` |
+| D — Attribution provenance | Grant / license / companion name | 🔲 To do — **owner confirmation.** The NSF grant number, MIT `Copyright (c) 2025 upwins`, and the `upwins-hsi-preprocessing` companion name are all present and were cross-checked against the companion repo on 2026-07-30 (they match). No change warranted; one explicit owner "yes" closes it. See "D. Attribution" below. |
 
 **Net:** every phase is now closed. Phases 2–5 and 7 are implemented on `main`;
 **Phase 1 is resolved by the documentation path** — the client decided not to
 ship the sample cube, the trained bundle, or the executed HTML exports, so the
 docs are made honest about their absence rather than the artifacts being added.
-**C2** and **C3 / Phase 6** are the recorded declines. Nothing in Phases 2–5 or 7
-was executed end to end — there is still no training data and no GPU in this
-environment; verification was static plus targeted unit-level execution of the
-extracted logic (details under "What was verified" below).
+**C2** and **C3 / Phase 6** are the recorded declines. **One non-phase item is
+still open:** an owner confirmation of the attribution assertions (grant number,
+license, companion-repo name) — all present and consistent, but not yet confirmed
+(item D). Nothing in Phases 2–5 or 7 was executed end to end — there is still no
+training data and no GPU in this environment; verification was static plus
+targeted unit-level execution of the extracted logic (details under "What was
+verified" below).
 
 ---
 
@@ -202,6 +206,11 @@ fixed; the packaging and hygiene items (C1, C2, C4–C8) are either resolved or
 explicitly declined with the reasoning recorded in the file itself. C3 (tests) is
 out of scope by the client's decision.
 
+**One light gate remains before handoff:** an owner confirmation of the
+attribution assertions — the NSF grant number, the MIT copyright line, and the
+companion-repo name (item D). These are present and consistent with the companion
+repo, so this is a confirmation, not a fix; it does not block the code or docs.
+
 Nothing here is a security problem. No secrets are committed, and none appear in
 the history.
 
@@ -258,6 +267,30 @@ concern.
 | C6 | Metric CSVs written to the **current working directory**, not gitignored. | notebook 01 cell 59 | ✅ Done `7bb1f2d` — written to `paths.metrics_dir` (`data/metrics`, gitignored), plus a `classification_report_*.csv` ignore rule; comment framing corrected in `26f1f9c` (the CSVs were never committed — an untracked-accumulation hazard, not an incident). |
 | C7 | Unused `import json`. | `spectral_collection.py:7` | ✅ Done `7bb1f2d`. |
 | C8 | Devcontainer bind-mount hardcodes a **developer-specific path**. | `devcontainer.json:31` | ✅ Done (documented) `7bb1f2d`, then simplified by `17c82ac` — `data/` is now purely the mount, its docs moved to `docs/data.md`, and the "mount hides `data/sample/`" warning was removed (nothing is committed under `data/` any more). Path left hardcoded by decision; README, `docs/data.md` and a comment on the `mounts` line explain it. |
+
+### D. Attribution provenance — owner confirmation (not a defect)
+
+**Status: 🔲 To do — one owner confirmation.** The repo's provenance assertions
+are all present and internally consistent, and were cross-checked against the
+companion `upwins-hsi-preprocessing` repo on 2026-07-30 — they match. No change is
+warranted; the default is to leave them as-is. But one explicit "yes" from the
+owner closes them before handoff. **Do not invent replacements.**
+
+The three assertions and where they live:
+
+| Assertion | Where |
+|---|---|
+| **NSF Grant No. 2319470** | `README.md` (Acknowledgment), `CITATION.cff` |
+| **MIT License, "Copyright (c) 2025 upwins"** | `LICENSE`; `license: MIT` also in `CITATION.cff` |
+| **Companion repo name `upwins-hsi-preprocessing`** | `README.md`, `docs/data.md`, `docs/recording_runbook.md`, `src/hsiViewer/` |
+
+**Cross-repo check (2026-07-30).** The companion `upwins-hsi-preprocessing` repo
+carries the identical grant number and MIT copyright line, and names *this* repo
+(`upwins-veg-classifier`) as its companion in turn — the reference is
+bidirectional and consistent. That raises confidence but is **not** confirmation:
+if one value is wrong it is wrong in both repos, and both would need the same
+correction. This mirrors item **P2-9** in the companion's `AUDIT_HANDOFF.md`; a
+single owner confirmation should close both at once.
 
 ---
 
@@ -669,7 +702,12 @@ Not verified, and not verifiable here:
 
 ## What I need from you
 
-**Nothing — every open question is now resolved.** For the record:
+**One thing: confirm the attribution assertions (item D).** Every phase question
+is resolved; the only open ask is a single owner "yes" that the NSF grant number,
+the MIT `Copyright (c) 2025 upwins` line, and the `upwins-hsi-preprocessing`
+companion name are correct. They are present and consistent with the companion
+repo, so this is a confirmation, not a fix — but do confirm before handoff, and
+**do not invent replacements** if anything is wrong. For the record:
 
 1. ~~**Phase 2:** the correct normalization behavior for "piloted" imagery.~~
    **Answered 2026-07-27** — see Phase 2. Implemented.
@@ -686,6 +724,9 @@ Not verified, and not verifiable here:
 6. ~~Whether to merge `claude/plan-phases-2-5-71wsyr`.~~ **Resolved** — those
    phases are now merged to `main` (`c8e8e69`..`7bb1f2d`), with follow-up
    refinements on top (`main` at `ee8b474`).
+7. **Attribution (item D):** confirm the NSF grant number, the MIT copyright
+   line, and the `upwins-hsi-preprocessing` companion name. *Open — present and
+   consistent with the companion repo, awaiting one explicit owner "yes".*
 
 ## Open questions (unresolved; not blocking any phase)
 
