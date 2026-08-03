@@ -19,13 +19,17 @@ class ROIs_class:
     ----------
     names : list
         ROI names (from the first column of the ROI table).
-    colors : list
-        Display colors assigned to each ROI.
-    masks : list
-        Per-ROI pixel masks.
+    colors : dict
+        ROI name -> display color, written by the viewer as a ``'#rrggbb'``
+        string (``QColor.name()``), not an ``(r, g, b)`` triple.
+    masks : dict
+        ROI name -> boolean pixel mask, in the original image orientation even
+        when the viewer that drew it was rotated.
     df : pandas.DataFrame
         Pixel locations, names, colors, and spectra for the ROIs. The training
-        notebook reads spectra/labels from this DataFrame.
+        notebook reads spectra/labels from this DataFrame, and is the only
+        attribute it uses -- ``colors`` and ``masks`` are carried for
+        round-tripping back into the viewer.
     """
 
     def __init__(self, names=None, colors=None, masks=None, df=None):
