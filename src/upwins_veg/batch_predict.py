@@ -228,7 +228,29 @@ def classify_and_save_image(fname_hdr, output_dir, model, scaler, label_maps, ta
             output_filename = os.path.join(output_dir, f"{base_name}_{task}_classification.hdr")
             class_names = label_maps[task]
 
-            spectral.envi.save_classification(output_filename, reshaped_map, metadata=im.metadata, class_names=class_names)
+            # Build a per-task header rather than handing the source cube's
+            # metadata straight through. Two things went wrong with that:
+            #
+            # 1. It carried no `description`, so every map was anonymous --
+            #    notebook 03 titles its figure from that key and fell back to
+            #    "Untitled". Naming the task makes each of the five maps
+            #    self-identifying, both in the figure and to anything else
+            #    reading the header.
+            # 2. It copied the cube's per-band keys -- `wavelength` above all --
+            #    into a SINGLE-band classification file, so the header claimed
+            #    one band and hundreds of wavelengths. Drop them; they describe
+            #    the reflectance cube that was classified, not the class map.
+            #
+            # dict() also matters on its own: the loop used to pass the same
+            # metadata object for all five tasks, so any edit to one leaked into
+            # the rest.
+            md = dict(im.metadata)
+            for _key in ('wavelength', 'band names', 'fwhm', 'wavelength units',
+                         'bbl', 'default bands', 'reflectance scale factor'):
+                md.pop(_key, None)
+            md['description'] = task.capitalize()
+
+            spectral.envi.save_classification(output_filename, reshaped_map, metadata=md, class_names=class_names)
             print(f"  -> Successfully saved to: {output_filename}")
 
     finally:
