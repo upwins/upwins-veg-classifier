@@ -38,7 +38,9 @@ the tutorial videos, `docs/recording_runbook.md` is the high-level guide.
 ## Layout
 
 ```
-config.yaml              All paths and hyperparameters live here.
+config.yaml              All paths live here. The training hyperparameters are the
+                         deliberate exception -- they sit in notebook 01's setup cell,
+                         where you tune them by re-running.
 notebooks/               The three deliverable notebooks (run in order).
 src/upwins_veg/          Importable support code (installed via `pip install -e .`).
 src/hsiViewer/           Stand-in ROIs_class so ROI pickles load without the PyQt viewer.
@@ -60,6 +62,10 @@ always travel together — a mismatch silently produces wrong class names:
 
 These are **produced by running notebook 01, not distributed with the repo** — a
 fresh clone must train first to populate the bundle before running prediction.
+
+Training also writes `best_weights.weights.h5` into the same directory. It is a
+by-product of the train cell, not part of the bundle: nothing reads it back, and
+prediction needs only the four files above.
 
 ## Data
 

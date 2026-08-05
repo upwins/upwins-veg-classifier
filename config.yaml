@@ -2,10 +2,16 @@
 # Configuration for the UPWINS vegetation classifier.
 # All notebook paths are read from here -- edit this file, not the notebooks.
 #
-# Paths are relative to the repo root (where you launch Jupyter). For the
-# tutorial/video, point `image`, `roi_dir`, and `spectral_library` at your
-# real data directory. The devcontainer bind-mounts an external data/ dir,
-# so you can keep large data outside the repo.
+# Paths are relative to the repo root, and the notebooks resolve them from
+# there, so Jupyter can be launched from either the repo root or the notebooks/
+# folder. For the tutorial/video, point `image`, `roi_dir`, and
+# `spectral_library` at your real data directory. The devcontainer bind-mounts
+# an external data/ dir, so you can keep large data outside the repo.
+#
+# One set of values is deliberately NOT here: the training hyperparameters
+# (EPOCHS, BATCH_SIZE, LEARNING_RATE, PATIENCE, LOSS_WEIGHTS). They live in
+# notebook 01's setup cell, where you tune them by editing and re-running --
+# a loop that should not detour through a config file.
 # ==========================================================================
 
 paths:

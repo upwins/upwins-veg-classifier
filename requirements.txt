@@ -1,5 +1,8 @@
 # Pinned so a fresh clone reproduces the tutorial environment.
 #
+# Shared packages are pinned to the same versions as the companion UPWINS
+# repos, so one environment can serve all of them.
+#
 # This file is the single source of truth for runtime dependencies:
 # pyproject.toml deliberately declares none, so install this first and then
 # `pip install -e .` to put `upwins_veg` on the import path.

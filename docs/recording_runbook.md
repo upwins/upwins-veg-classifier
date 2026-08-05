@@ -18,7 +18,7 @@ just gives you the running order, the beats to emphasize, and the gotchas.
 - [ ] Edit `config.yaml` so `paths.*` point at your **real** data for the recording.
 - [ ] Confirm the data is reachable: the spectral library `.pkl`, the reference image, and the ROI directory.
 - [ ] Decide how you'll handle the long training step (see the note in Part 1).
-- [ ] `jupyter lab`, both notebooks open, kernels restarted so cell numbers are clean on screen.
+- [ ] `jupyter lab`, all three notebooks open, kernels restarted so cell numbers are clean on screen.
 - [ ] Clear old outputs (`Kernel → Restart & Clear Outputs`) so the run looks fresh.
 
 **Training-time decision (important):** a full 600-epoch run is too long for a
@@ -38,7 +38,7 @@ Run top to bottom. Beats to hit (each maps to a narrated cell):
 | Section | Say / show |
 |---|---|
 | Imports & **Configuration** | Everything is config-driven; the model + scaler + label maps + wavelengths are one **bundle** that always travels together. |
-| **Load the spectral library** | This is the labeled reference data; mention it can be refreshed from the database but we use the shipped `.pkl`. |
+| **Load the spectral library** | This is the labeled reference data; mention it can be refreshed from the internal database but we read the `.pkl` at `paths.spectral_library` (nothing ships — you supply it). |
 | **Option 1 vs Option 2 (bands)** | The model's band axis comes from either an image or an ROI — run **one**. Explain why the library gets resampled to match the sensor. |
 | **Resample the library** | Library + imagery now share one band axis. |
 | **ROIs** (finder → find → prepare → combine) | ROIs are labeled pixels drawn on imagery; stratified sampling keeps them balanced; they're combined with the library. |
@@ -46,9 +46,11 @@ Run top to bottom. Beats to hit (each maps to a narrated cell):
 | **Build → Compile → Train** | One shared CNN backbone, five task heads. Early stopping restores the best weights. *(Apply your training-time decision here.)* |
 | **Evaluate** | Show the per-task accuracy, the detailed report, and at least one **confusion matrix** — this is the satisfying payoff shot. |
 
-**Expected result on screen:** `models/example_model_v1/` fills with
-`model.keras`, `scaler.pkl`, `label_maps.json`, `wavelengths.json`. Show that
-directory before moving on — it's the hand-off to Part 2.
+**Expected result on screen:** `models/example_model_v1/` fills with the four
+bundle files — `model.keras`, `scaler.pkl`, `label_maps.json`,
+`wavelengths.json` — plus `best_weights.weights.h5`, a by-product of the train
+cell that prediction does not read. Show that directory before moving on: the
+four bundle files are the hand-off to Part 2.
 
 ---
 
@@ -60,14 +62,14 @@ Run top to bottom.
 |---|---|
 | **Load model & scaler** | We're loading exactly the bundle Part 1 wrote. |
 | **Load / preview label maps** | Show the class names the model outputs. |
-| **Classify the image** | Highlight the **band-match assertion** — it refuses to run on an image whose bands don't match the model, turning a silent wrong answer into a clear error. Then it classifies chunk-by-chunk. |
+| **Classify the image** | Highlight the **band-match check** — a wrong band *count* is an assertion that stops the run outright, and band centers more than 1 nm off print a warning. Either way a silent wrong answer becomes a visible one. Then it classifies chunk-by-chunk. |
 
 **Expected result on screen:** ENVI classification maps appear in
 `data/output/` (one per task).
 
 ---
 
-## 2b. Optional — Display  →  `notebooks/03_display_classification.ipynb`
+## 3. Part 3 *(optional)* — Display  →  `notebooks/03_display_classification.ipynb`
 
 For the closing shot, run this to render a classification map with a labeled,
 color-coded legend. Set `TASK` (e.g. `plant`) and run — it rebuilds the output
@@ -77,7 +79,7 @@ bands already match.
 
 ---
 
-## 3. Talking points worth landing
+## 4. Talking points worth landing
 
 - **Why multi-task:** one network predicts five attributes at once, sharing features.
 - **Why library + ROIs:** the library gives clean labeled spectra; ROIs ground it in real imagery.
@@ -86,7 +88,7 @@ bands already match.
 
 ---
 
-## 4. After recording
+## 5. After recording
 
 - Tag the exact state you filmed so viewers can reproduce it:
   ```bash
@@ -97,4 +99,9 @@ bands already match.
   ```bash
   git clone --branch v1.0.0-tutorial https://github.com/upwins/upwins-veg-classifier
   ```
-- Export executed copies to `docs/` (`jupyter nbconvert --to html --execute ...`) as a static reference viewers can compare against.
+- Export the notebooks you filmed (`jupyter nbconvert --to html notebooks/*.ipynb`)
+  if you want a static companion to the video. Nothing here needs a display, so
+  `--execute` also works if your data is in place — but it re-runs training, so
+  expect it to take as long as the real run. Either way, regenerate the exports
+  rather than committing them, so they cannot drift out of step with the
+  notebooks.

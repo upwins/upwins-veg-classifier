@@ -12,12 +12,17 @@ into five attributes: plant, age, part, health, lifecycle.
 | `label_maps.json` | Output index -> class name, per task. |
 | `wavelengths.json` | Band centers (nm) the model expects. |
 
+Training also writes `best_weights.weights.h5` alongside these. It is a
+by-product of the train cell, not part of the bundle — nothing reads it back.
+
 ## Training data
 - Spectral library: labeled ASD spectra (`plant/age/part/health/lifecycle`).
 - Labeled ROIs drawn on reflectance imagery, resampled to the sensor bands.
 - ROI pixels are subsampled before training (`stratified_sample_with_min_per_roi`,
-  notebook 01): at least 30 pixels from each ROI (`Name` + `Color` group), up to
-  300 pixels total, so no single large ROI dominates.
+  notebook 01): at least 30 pixels from each ROI (`Name` + `Color` group), topped
+  up at random to a total of at least 300, so no single large ROI dominates. The
+  300 is a floor, not a cap — with enough ROIs the per-ROI minimums alone exceed
+  it, and the total is then however many that comes to.
 - Split 70 / 15 / 15 train / validation / test, per pixel, stratified on `plant`.
 - _Fill in: collection dates, sites, number of spectra per class, library vs.
   ROI counts._
@@ -75,7 +80,7 @@ in `label_maps.json`.
 
 The train/val/test split is **per pixel**, not per ROI. Pixels from a single ROI
 are therefore spread across all three splits, and pixels within one ROI are
-spatially autocorrelated — neighbouring pixels of the same leaf are nearly
+spatially autocorrelated — neighboring pixels of the same leaf are nearly
 identical spectra. The overall test accuracy consequently measures
 
 > *how well the model labels pixels drawn from the same ROIs, on the same

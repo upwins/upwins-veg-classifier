@@ -19,6 +19,11 @@ __pycache__/
 build/
 dist/
 
-# Model bundle: commit the small example bundle, ignore ad-hoc experiments.
+# Model bundle: no bundle is committed -- notebook 01 writes it (see
+# models/example_model_v1/README.md). These two lines ignore any ad-hoc model
+# directory alongside it while keeping models/example_model_v1/ visible to git,
+# so a fresh clone gets the directory and its READMEs. Its contents are
+# therefore NOT ignored: after training, the bundle files show up as untracked.
+# Leave them that way unless you mean to commit them.
 models/*
 !models/example_model_v1/

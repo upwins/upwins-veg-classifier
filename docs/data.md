@@ -11,10 +11,17 @@ devcontainer mount, or by the notebooks when they write their outputs.
 data/
 ├── library/
 │   └── library_with_Genus_species.pkl   Full spectral library (pickled DataFrame)
+├── sample/
+│   └── raw_0_ref / .hdr        Reflectance cube: the band-centers reference for
+│                               training, and the image prediction classifies
 ├── rois_labeled/               Labeled training ROIs (.pkl), any subfolder depth
 ├── metrics/                    Per-task metric CSVs written by training
 └── output/                     Classification maps written by prediction
 ```
+
+`sample/` is where `config.yaml`'s `paths.image` / `paths.image_hdr` and
+`prediction.input_hdr` point. Those are illustrative defaults, not files that
+ship — edit them to name your own reflectance cube.
 
 `metrics/` and `output/` are created on demand — they hold run artifacts, not
 inputs. Their locations come from `paths.metrics_dir` and
@@ -56,6 +63,7 @@ an empty directory for a source path that does not exist, and the notebooks then
 fail with confusing missing-file errors rather than saying the mount was wrong.
 
 Because `data/` holds no committed content, the mount hides nothing: inside the
-container, `data/` is simply your external directory. Anything the repo ships
-that a run needs — such as a small runnable example — lives outside `data/`
-(see `examples/`) so the mount cannot cover it.
+container, `data/` is simply your external directory. That is also why
+`examples/` sits outside `data/`: no runnable example ships today, but if one is
+ever added it has to live somewhere the mount cannot cover. See
+`examples/README.md`.
