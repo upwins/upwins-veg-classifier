@@ -20,10 +20,16 @@ build/
 dist/
 
 # Model bundle: no bundle is committed -- notebook 01 writes it (see
-# models/example_model_v1/README.md). These two lines ignore any ad-hoc model
-# directory alongside it while keeping models/example_model_v1/ visible to git,
-# so a fresh clone gets the directory and its READMEs. Its contents are
-# therefore NOT ignored: after training, the bundle files show up as untracked.
-# Leave them that way unless you mean to commit them.
+# models/example_model_v1/README.md). Ignore every model directory, then
+# re-admit models/example_model_v1/ but ignore its contents, then whitelist the
+# two documents that do ship. A fresh clone therefore gets the directory and an
+# explanation of what belongs in it, while a trained bundle -- model.keras,
+# scaler.pkl, label_maps.json, wavelengths.json and the best_weights.weights.h5
+# by-product -- stays ignored and cannot be committed by accident. Anything new
+# that training writes here is ignored by default; add a whitelist line only if
+# you actually mean to commit it.
 models/*
 !models/example_model_v1/
+models/example_model_v1/*
+!models/example_model_v1/README.md
+!models/example_model_v1/model_card.md
