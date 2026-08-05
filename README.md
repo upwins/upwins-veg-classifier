@@ -67,10 +67,6 @@ Training also writes `best_weights.weights.h5` into the same directory. It is a
 by-product of the train cell, not part of the bundle: nothing reads it back, and
 prediction needs only the four files above.
 
-Everything the training run writes there is gitignored — only the directory's
-two documents are tracked — so a bundle cannot be committed by accident. Keep a
-bundle you care about somewhere outside the repo.
-
 ## Data
 
 No data ships in the repo. `data/` holds the imagery, ROIs, spectral library and

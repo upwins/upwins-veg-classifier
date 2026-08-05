@@ -19,17 +19,8 @@ __pycache__/
 build/
 dist/
 
-# Model bundle: no bundle is committed -- notebook 01 writes it (see
-# models/example_model_v1/README.md). Ignore every model directory, then
-# re-admit models/example_model_v1/ but ignore its contents, then whitelist the
-# two documents that do ship. A fresh clone therefore gets the directory and an
-# explanation of what belongs in it, while a trained bundle -- model.keras,
-# scaler.pkl, label_maps.json, wavelengths.json and the best_weights.weights.h5
-# by-product -- stays ignored and cannot be committed by accident. Anything new
-# that training writes here is ignored by default; add a whitelist line only if
-# you actually mean to commit it.
+# Ignore ad-hoc model directories, but keep models/example_model_v1/ so a fresh
+# clone gets it and its READMEs. No bundle is committed -- notebook 01 writes
+# one there, and it shows up as untracked.
 models/*
 !models/example_model_v1/
-models/example_model_v1/*
-!models/example_model_v1/README.md
-!models/example_model_v1/model_card.md

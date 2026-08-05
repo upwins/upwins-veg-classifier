@@ -15,7 +15,3 @@ this README and `model_card.md`. The bundle is produced by training, not
 distributed with the repo, so run notebook 01 to populate this directory before
 running prediction. The four bundle files are coupled and must always travel
 together; see `docs/model_card.md`.
-
-Everything this directory holds other than those two documents is gitignored, so
-a trained bundle cannot be committed by accident. Move a bundle you want to keep
-somewhere outside the repo, or amend `.gitignore` deliberately.
