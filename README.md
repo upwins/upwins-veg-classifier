@@ -1,6 +1,6 @@
 # UPWINS Vegetation Classifier
 
-Train a multi-task 1D convolutional neural network to identify coastal
+Train a multi-task 1D convolutional neural network to identify
 vegetation from hyperspectral reflectance, then batch-classify imagery.
 The model learns from a labeled **spectral library** combined with labeled
 **regions of interest (ROIs)** drawn on imagery, and predicts five attributes
