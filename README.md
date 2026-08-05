@@ -32,8 +32,8 @@ jupyter lab
 | `notebooks/03_display_classification.ipynb` | Displays an ENVI classification map with a color-coded, labeled legend. |
 
 Each code cell has a short markdown cell above it explaining what it does, so
-the notebooks double as a written walkthrough. If you're recording or following
-the tutorial videos, `docs/recording_runbook.md` is the high-level guide.
+the notebooks double as a written walkthrough — read top to bottom, they are
+the documentation for the pipeline.
 
 ## Layout
 
@@ -47,7 +47,7 @@ src/hsiViewer/           Stand-in ROIs_class so ROI pickles load without the PyQ
 models/example_model_v1/ Where notebook 01 writes the model bundle -- not populated in a fresh clone; see its README.
 examples/                No runnable example ships; run against your own data -- see its README.
 data/                    Not committed -- external data and run outputs; see docs/data.md.
-docs/                    Model card, data guide, and recording runbook.
+docs/                    Model card and data guide.
 ```
 
 ## The model bundle
