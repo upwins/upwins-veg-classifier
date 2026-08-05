@@ -28,6 +28,17 @@ either done or a recorded decision. See the Phase 1 and Phase 6 sections.
 > decision, intentionally left as-is) · 🔲 **To do** (still open — client input or
 > a follow-up commit).
 
+> **Second overlay — docs/comment consistency pass, 2026-08-05** (branch
+> `claude/client-repo-docs-consistency-fehfiy`). All three client repos were
+> reviewed together for consistency with each other and with their codebases.
+> **This overlay supersedes the one above and the phase rows below where they
+> disagree.** Two client decisions reframe several rows: **the working audit
+> documents are removed before delivery**, and **the recording runbooks are
+> removed before delivery** — so `docs/` ships `data.md` and `model_card.md` only,
+> and nothing that ships references this file or the runbook. See the new
+> section *Docs/comment consistency pass* below for what changed, what it
+> corrects, and the deferred task list.
+
 | Phase | Covers | Status on `main` |
 |---|---|---|
 | 1 — Make the promises true | A1, A2, A3 | ✅ Done (by decision) — client decided **not to ship artifacts** (2026-07-30). The docs are made honest instead: the README and the `models/`, `examples/` and `data/` docs state plainly that the bundle and data are produced/obtained separately, not distributed with the repo. See Phase 1. |
@@ -232,7 +243,7 @@ planned.
 |---|---------|----------|--------|
 | A1 | **No model bundle.** `models/example_model_v1/` holds only `README.md` and `model_card.md`. None of `model.keras`, `scaler.pkl`, `label_maps.json`, `wavelengths.json` exist. | Notebook 02 cell 3 calls `tf.keras.models.load_model(...)` and will raise immediately. | ✅ Done (by decision) — bundle intentionally not shipped. The README's "The model bundle" section and `models/example_model_v1/README.md` now state the four files are produced by running notebook 01, not distributed with the repo (`67f05a6`, `b69cf35`, and the 2026-07-30 doc pass). |
 | A2 | **No sample data.** `data/` no longer holds committed content (`17c82ac`); `examples/` is a placeholder README only. | `config.yaml` points `image: data/sample/raw_0_ref`, an illustrative default a comment now flags as such. | ✅ Done (by decision) — no sample data ships. `examples/README.md`, the README layout line, and `config.yaml`'s comment all state that the notebooks run against your own data (see `docs/data.md`), not a committed sample. |
-| A3 | **No executed HTML exports in `docs/`.** `docs/` holds `data.md`, `model_card.md` and `recording_runbook.md`. | Producing the HTML is an action item in `docs/recording_runbook.md` §4, not a committed artifact. | ✅ Done — the README's "executed HTML exports of the notebooks" claim was dropped (`67f05a6`); the exports are a recorder action item in the runbook, not a promised committed artifact. |
+| A3 | **No executed HTML exports in `docs/`.** `docs/` holds `data.md`, `model_card.md` and `recording_runbook.md`. | Producing the HTML is an action item in `docs/recording_runbook.md` §4, not a committed artifact. | ✅ Done — the README's "executed HTML exports of the notebooks" claim was dropped (`67f05a6`); the exports are a recorder action item in the runbook, not a promised committed artifact. **Updated 2026-08-05:** the runbook is removed before delivery, so `docs/` ships `data.md` and `model_card.md` only and the export action item goes with it. The finding stays closed — no claim of HTML exports survives anywhere. |
 
 A1 and A2 are *not* caused by `.gitignore`. I verified with `git check-ignore`
 that all four bundle files were trackable — the files were simply never
@@ -749,6 +760,79 @@ repo, so this is a confirmation, not a fix — but do confirm before handoff, an
   determines whether the TF/numpy pins should be dropped from `requirements.txt`
   and left to the image. It does not affect Phase 5 as implemented, which
   declares no dependencies at all and so never asks pip to resolve them.
+
+## Docs/comment consistency pass — added 2026-08-05 (branch `claude/client-repo-docs-consistency-fehfiy`)
+
+All three client repos were reviewed together for consistency with each other and
+with their codebases. **This section is the current state and supersedes anything
+above where they disagree.**
+
+**What changed here:**
+
+| Change | Why | Supersedes |
+|---|---|---|
+| README's Layout said `config.yaml` holds "all paths **and hyperparameters**" | It holds no hyperparameters — `EPOCHS`, `BATCH_SIZE`, `LEARNING_RATE`, `PATIENCE`, `LOSS_WEIGHTS` are in notebook 01's setup cell. Both README and `config.yaml` now say so, with the reason | Phase 7 / C4–C8 docs |
+| `.gitignore`'s comment said the example bundle is committed | It is not, and every other document says so. The comment now describes what the two lines do | Phase 1 |
+| `docs/data.md`'s expected layout omitted `data/sample/` | `config.yaml` points at it three times (`paths.image`, `paths.image_hdr`, `prediction.input_hdr`) | Phase 7 / C5 |
+| `docs/data.md` implied a runnable example ships | `examples/README.md` says none does | Phase 1 / A2 |
+| A fifth training output, `best_weights.weights.h5`, was undocumented | The four-file bundle is described in the README, the model card and `models/example_model_v1/README.md`; none mentioned it. Recorded in all four places as a by-product nothing reads back | Phase 1 |
+| Model card described the ROI subsample as "up to 300 pixels total" | 300 is a floor, not a cap: `MIN_PIXELS_PER_ROI = 30` per group can sum past it | Phase 4c |
+| Runbook said "both notebooks" (there are three), told the presenter to mention "the shipped `.pkl`" when nothing ships, and called the band-match check a hard stop | Only the band *count* is an assertion; centers drift more than 1 nm prints a warning. Notebook 02's narration cell drew the same over-broad conclusion and was corrected too | Phase 3 / B2 |
+| Devcontainer named `tf2-py3`, carried a dead commented-out `/mnt/d` mount, and its comments diverged from the companions' | — | Phase 7 |
+| `src/upwins_veg/__init__.py` docstring expanded to list the package's modules; `requirements.txt` records the shared-pin policy | Matched to the companion repos' depth | Phase 5 / C1 |
+| Every reference to `docs/recording_runbook.md` removed from `README.md` | The runbook is removed before delivery | A3 |
+
+**Considered and reverted:** tightening `.gitignore` so the model bundle could not
+be committed by accident (`models/example_model_v1/*` plus whitelists for the two
+documents). Implemented, then **reverted at the client's request 2026-08-05** as
+more machinery than the problem warranted. The rule is back to `models/*` +
+`!models/example_model_v1/`, which means a trained bundle sits in that directory
+**untracked but not ignored** — git reports it plainly, and it is one `git add -A`
+from being committed. That is the accepted state, not an oversight.
+
+**Left alone deliberately:** `devcontainer.json`'s `remoteUser` is commented out
+here where both companions set `root`. The base images differ — this repo builds
+on `nvcr.io/nvidia/tensorflow:24.12-tf2-py3`, the companions on
+`mcr.microsoft.com/devcontainers/python:3.12-bookworm` — so this is a functional
+difference with a reason, not drift.
+
+### Deferred — decisions still outstanding
+
+- [ ] **Credit `upwins-microscene-preprocessing` as a second source of training
+      ROIs.** This repo names only `upwins-hsi-preprocessing`, in `README.md`
+      (the "companion project" line), `docs/data.md` ("Where training ROIs come
+      from"), `src/hsiViewer/__init__.py` and `src/hsiViewer/hsi_viewer_ROI.py`.
+      Microscene produces the same `hsiViewer.hsi_viewer_ROI.ROIs_class` pickles
+      from the benchtop path and feeds this repo too. Deferred 2026-08-05 pending
+      the decision on whether a microscene tutorial video is recorded.
+- [ ] **Video numbering, if the videos are recorded.** The runbooks are being
+      removed, and they were the only statement of the series order. Both
+      preprocessing runbooks called this repo "Video 2"; this repo's own runbook
+      never claimed a number. If the ordering is still wanted it needs a home
+      outside the runbooks.
+- [ ] **Notebook structure.** Deferred 2026-08-05.
+      `upwins-microscene-preprocessing` is the house style — an H1 title + intro
+      cell on every notebook and numbered `## N.` sections throughout. Here,
+      notebook 01 has unnumbered sentence-case `##`/`###` headings, notebook 02
+      has **no headings at all**, and notebook 03 has an H1 but no sections. The
+      markdown-above-every-code-cell narration is complete and correct in all
+      three — this is about the scaffolding around it.
+- [ ] **Item D — attribution provenance** (NSF grant number, `LICENSE`,
+      companion-repo name). Still awaiting one owner confirmation; explicitly
+      deferred again 2026-08-05. Note that
+      `upwins-microscene-preprocessing`'s `LICENSE` says
+      `Copyright (c) 2025 William F Basener` where this repo and
+      `upwins-hsi-preprocessing` say `Copyright (c) 2025 upwins`. One answer
+      closes it in all three repos.
+- [ ] **The `_fill in_` placeholders in `docs/model_card.md`.** Unchanged and
+      still needed: metrics from a training run, class counts and band range from
+      a produced bundle, and the collection dates / sites / trainer that only the
+      data owner has. `docs/model_card.md` ships, so these are client-visible.
+- [ ] **`docs/data.md`'s `TODO (data owner)`** — the dataset download link or DOI.
+- [ ] **Delete this file** before delivery, along with `docs/recording_runbook.md`.
+      Nothing that ships references either.
+
+---
 
 ## Future work (deliberately deferred, not oversights)
 
