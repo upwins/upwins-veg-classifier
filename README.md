@@ -91,6 +91,3 @@ Because nothing is committed under `data/`, the mount hides nothing: inside the
 container, `data/` is simply your external directory.
 
 ## Acknowledgment
-
-This material is based upon work supported by the National Science Foundation
-under Grant No. 2319470.
